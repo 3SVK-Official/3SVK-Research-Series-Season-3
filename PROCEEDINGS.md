@@ -7,8 +7,14 @@
 ## Lifelong Reusable Intellectual Property & Research Template
 
 ### 1. Title of the Invention / Project
-* **Project Name:** Type your project title here
-* **Framework Identifier:** Type your challenge track here
+* **Project Name:** Enterprise Cloud-Scale AI Workflow & Automation Framework
+* **Framework Identifier:** 3SVK National Research Series Season 3 - Cloud & AI Track
+
+### 3. Core Technical Abstract & Architecture
+* **The Problem Addressed:** Resolves high latency, system bottlenecks, and security risks when scaling machine learning models and cloud workloads in enterprise environments.
+* **Core Innovation Module 1:** Developed a modular automation engine using container orchestration (Kubernetes) and Infrastructure as Code (IaC) to streamline deployment pipelines.
+* **Core Innovation Module 2:** Implemented a secure, decentralized data persistence layer utilizing zero-trust access protocols and automated threat-detection loops.
+* **Communication / Synchronization Protocol:** Utilized asynchronous event-driven messaging queues to ensure zero data loss and real-time state synchronization across distributed multi-cloud nodes[cite: 3].
 
 ### 2. Primary Inventors / Applicants
 * **Applicant 1:** Siripuram Vinod Kumar
