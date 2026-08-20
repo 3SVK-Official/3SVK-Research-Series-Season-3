@@ -15,3 +15,9 @@ Legal Prohibition: In accordance with the Copyright Act of India, any unauthoriz
 ## 📚 Official Citation
 If you use, reference, or build upon this research series, please cite it via our permanent Zenodo DOI:
 > 3SVK Official. (2026). 3SVK Research Series Season 3: Official Archive & Proceedings. Zenodo. https://doi.org/10.5281/zenodo.22008262
+
+
+
+
+
+3
