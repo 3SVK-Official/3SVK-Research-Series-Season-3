@@ -10,22 +10,16 @@
 * **Project Name:** Enterprise Cloud-Scale AI Workflow & Automation Framework
 * **Framework Identifier:** 3SVK National Research Series Season 3 - Cloud & AI Track
 
-### 3. Core Technical Abstract & Architecture
-* **The Problem Addressed:** Resolves high latency, system bottlenecks, and security risks when scaling machine learning models and cloud workloads in enterprise environments.
-* **Core Innovation Module 1:** Developed a modular automation engine using container orchestration (Kubernetes) and Infrastructure as Code (IaC) to streamline deployment pipelines.
-* **Core Innovation Module 2:** Implemented a secure, decentralized data persistence layer utilizing zero-trust access protocols and automated threat-detection loops.
-* **Communication / Synchronization Protocol:** Utilized asynchronous event-driven messaging queues to ensure zero data loss and real-time state synchronization across distributed multi-cloud nodes[cite: 3].
-
 ### 2. Primary Inventors / Applicants
 * **Applicant 1:** Siripuram Vinod Kumar
 * **Nationality:** Indian
 * **Permanent Address:** Type your address here
 
 ### 3. Core Technical Abstract & Architecture
-* **The Problem Addressed:** Type the problem your project solves here
-* **Core Innovation Module 1:** Type your primary mechanism or algorithm here
-* **Core Innovation Module 2:** Type your storage or security layer here
-* **Communication / Synchronization Protocol:** Type your protocol details here
+* **The Problem Addressed:** Resolves high latency, system bottlenecks, and security risks when scaling machine learning models and cloud workloads in enterprise environments.
+* **Core Innovation Module 1:** Developed a modular automation engine using container orchestration (Kubernetes) and Infrastructure as Code (IaC) to streamline deployment pipelines.
+* **Core Innovation Module 2:** Implemented a secure, decentralized data persistence layer utilizing zero-trust access protocols and automated threat-detection loops.
+* **Communication / Synchronization Protocol:** Utilized asynchronous event-driven messaging queues to ensure zero data loss and real-time state synchronization across distributed multi-cloud nodes.
 
 ### 4. Proven Performance Metrics (Benchmark Reference)
 * **Performance Metric 1 (Speed/Latency):** Type your metrics here
