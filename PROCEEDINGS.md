@@ -1,12 +1,33 @@
 # 3SVK Research Series Season 3: Official Archive & Proceedings
 
-Creator / Publisher: 3SVK Official
-Affiliation: 3SVK Research
-Founder & Product Lead:Vinod Kumar Siripuram
-Publication Date:August 19, 2026
-Permanent DOI: https://doi.org/10.5281/zenodo.22008262
+**Creator / Publisher:** 3SVK Official | **Affiliation:** 3SVK Research Founder & Product Lead: Vinod Kumar Siripuram | **Publication Date:** August 19, 2026 | **Permanent DOI:** [https://doi.org/10.5281/zenodo.22008262](https://doi.org/10.5281/zenodo.22008262)
 
 ---
+
+## Lifelong Reusable Intellectual Property & Research Template
+
+### 1. Title of the Invention / Project
+* **Project Name:** Enterprise Cloud-Scale AI Workflow & Automation Framework
+* **Framework Identifier:** 3SVK National Research Series Season 3 - Cloud & AI Track
+
+### 2. Primary Inventors / Applicants
+* **Applicant 1:** Siripuram Vinod Kumar
+* **Nationality:** Indian
+* **Permanent Address:** Type your address here
+
+### 3. Core Technical Abstract & Architecture
+* **The Problem Addressed:** Resolves high latency, system bottlenecks, and security risks when scaling machine learning models and cloud workloads in enterprise environments.
+* **Core Innovation Module 1:** Developed a modular automation engine using container orchestration (Kubernetes) and Infrastructure as Code (IaC) to streamline deployment pipelines.
+* **Core Innovation Module 2:** Implemented a secure, decentralized data persistence layer utilizing zero-trust access protocols and automated threat-detection loops.
+* **Communication / Synchronization Protocol:** Utilized asynchronous event-driven messaging queues to ensure zero data loss and real-time state synchronization across distributed multi-cloud nodes.
+
+### 4. Proven Performance Metrics (Benchmark Reference)
+* **Performance Metric 1 (Speed/Latency):** Type your metrics here
+* **Performance Metric 2 (Resource Efficiency):** Type your metrics here
+* **Performance Metric 3 (Reliability/Uptime):** Type your metrics here
+
+---
+
 
 ## Overview
 
@@ -20,6 +41,14 @@ Permitted Use:Registered participants may use the provided templates and resourc
 Legal Prohibition:** In accordance with the Copyright Act of India, any unauthorized reproduction, redistribution, adaptation, commercial exploitation, or plagiarism of these works without explicit written consent from 3SVK constitutes an infringement under Section 51 and is punishable under Section 63 and other applicable provisions of Indian law.
 
 ## Official Citation
+### Published Research Articles (Season 3)
+
+* [Article 1: Artificial Intelligence Frameworks in Modern Cloud Architecture](articles/paper-1.md)
+* [Article 2: Decentralized Data Management and Cryptographic Protocols](articles/paper-2.md)
+* [Article 3: Scalable Microservices and Automated Deployment Strategies](articles/paper-3.md)
+* [Article 4: IoT Edge Computing and Real-Time Data Analytics](articles/paper-4.md)
+* [Article 5: Automated Threat Detection in Enterprise Network Security](articles/paper-5.md)
+* [Article 6: Optimized Resource Allocation in Hybrid Cloud Environments](articles/paper-6.md)
 
 If you use, reference, or build upon this research series, please cite it via our permanent Zenodo DOI:
 
