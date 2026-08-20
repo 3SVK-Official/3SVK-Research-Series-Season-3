@@ -1,4 +1,4 @@
-# 3SVK-Research-Series-Season-3
+# 3SVK-Research-Series-Season-3 333
 Official research archive, documentation, and proceedings for the National Research & Innovation Challenge Season 3 by 3SVK.
 
 ---
@@ -15,9 +15,3 @@ Legal Prohibition: In accordance with the Copyright Act of India, any unauthoriz
 ## 📚 Official Citation
 If you use, reference, or build upon this research series, please cite it via our permanent Zenodo DOI:
 > 3SVK Official. (2026). 3SVK Research Series Season 3: Official Archive & Proceedings. Zenodo. https://doi.org/10.5281/zenodo.22008262
-
-
-
-
-
-3
