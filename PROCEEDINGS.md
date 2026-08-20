@@ -41,6 +41,14 @@ Permitted Use:Registered participants may use the provided templates and resourc
 Legal Prohibition:** In accordance with the Copyright Act of India, any unauthorized reproduction, redistribution, adaptation, commercial exploitation, or plagiarism of these works without explicit written consent from 3SVK constitutes an infringement under Section 51 and is punishable under Section 63 and other applicable provisions of Indian law.
 
 ## Official Citation
+### Published Research Articles (Season 3)
+
+* [Article 1: Artificial Intelligence Frameworks in Modern Cloud Architecture](articles/paper-1.md)
+* [Article 2: Decentralized Data Management and Cryptographic Protocols](articles/paper-2.md)
+* [Article 3: Scalable Microservices and Automated Deployment Strategies](articles/paper-3.md)
+* [Article 4: IoT Edge Computing and Real-Time Data Analytics](articles/paper-4.md)
+* [Article 5: Automated Threat Detection in Enterprise Network Security](articles/paper-5.md)
+* [Article 6: Optimized Resource Allocation in Hybrid Cloud Environments](articles/paper-6.md)
 
 If you use, reference, or build upon this research series, please cite it via our permanent Zenodo DOI:
 
