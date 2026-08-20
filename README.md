@@ -1,4 +1,4 @@
-# 3SVK-Research-Series-Season-3 333
+# 3SVK-Research-Series-Season-3 
 Official research archive, documentation, and proceedings for the National Research & Innovation Challenge Season 3 by 3SVK.
 
 ---
