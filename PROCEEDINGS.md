@@ -1,55 +1,63 @@
 # 3SVK Research Series Season 3: Official Archive & Proceedings
 
-**Creator / Publisher:** 3SVK Official | **Affiliation:** 3SVK Research Founder & Product Lead: Vinod Kumar Siripuram | **Publication Date:** August 19, 2026 | **Permanent DOI:** [https://doi.org/10.5281/zenodo.22008262](https://doi.org/10.5281/zenodo.22008262)
+**Author / Primary Innovator:** Mayank Bisht  
+**Academic Affiliation:** Vivekanand Inter College Ranidhara Almora  
+**Track:** Season 3 - National Research & Innovation Challenge  
+**Live Project DOI / Archive Status:** Verified Participant Proceedings  
 
 ---
 
-## Lifelong Reusable Intellectual Property & Research Template
+# Lifelong Reusable Intellectual Property & Research Template
 
-### 1. Title of the Invention / Project
-* **Project Name:** Enterprise Cloud-Scale AI Workflow & Automation Framework
-* **Framework Identifier:** 3SVK National Research Series Season 3 - Cloud & AI Track
-
-### 2. Primary Inventors / Applicants
-* **Applicant 1:** Siripuram Vinod Kumar
-* **Nationality:** Indian
-* **Permanent Address:** Type your address here
-
-### 3. Core Technical Abstract & Architecture
-* **The Problem Addressed:** Resolves high latency, system bottlenecks, and security risks when scaling machine learning models and cloud workloads in enterprise environments.
-* **Core Innovation Module 1:** Developed a modular automation engine using container orchestration (Kubernetes) and Infrastructure as Code (IaC) to streamline deployment pipelines.
-* **Core Innovation Module 2:** Implemented a secure, decentralized data persistence layer utilizing zero-trust access protocols and automated threat-detection loops.
-* **Communication / Synchronization Protocol:** Utilized asynchronous event-driven messaging queues to ensure zero data loss and real-time state synchronization across distributed multi-cloud nodes.
-
-### 4. Proven Performance Metrics (Benchmark Reference)
-* **Performance Metric 1 (Speed/Latency):** Type your metrics here
-* **Performance Metric 2 (Resource Efficiency):** Type your metrics here
-* **Performance Metric 3 (Reliability/Uptime):** Type your metrics here
+## 1. Title of the Invention / Project
+* **Project Name:** DEVELOPMENT X 1.0 (Intelligent Edge-Monitoring for Early Fire Prediction, Gas Leak Detection, and Wildlife Safety)[span_4](start_span)[span_4](end_span)
+* **Framework Identifier:** 3SVK Research Series Season 3 - National Research & Innovation Challenge[span_5](start_span)[span_5](end_span)
 
 ---
 
+## 2. Primary Inventors / Applicants (Placeholder Record)
+* **Applicant 1:** Mayank Bisht[span_6](start_span)[span_6](end_span)
+  * **Nationality:** Indian
+  * **Permanent Address:** Almora, Uttarakhand, India[span_7](start_span)[span_7](end_span)[span_8](start_span)[span_8](end_span)
+* **Co-Applicant / Academic Mentor:** Deepak Singh Mehta[span_9](start_span)[span_9](end_span)
+  * **Role:** Academic Mentor & Faculty, Vivekanand Inter College Ranidhara Almora[span_10](start_span)[span_10](end_span)
 
-## Overview
+---
 
-This document serves as the official, permanent archive and record for the 3SVK Research Series Season 3. It compiles the foundational research tracks, participant contributions, problem statements, and structural frameworks developed under the National Research & Innovation Challenge Season 3 by 3SVK.
+## 3. Core Technical Abstract & Architecture
 
-## Intellectual Property, Copyright & Legal Notice
+* **The Problem Addressed:**  
+  High latency and delayed observation in traditional environmental and industrial disaster management[span_11](start_span)[span_11](end_span). Delayed human detection during sudden mountain forest fires, dangerous human-wildlife encounters, and industrial toxic gas leaks frequently leads to catastrophic loss of life, crops, and surrounding biodiversity[span_12](start_span)[span_12](end_span).
 
-© 2026 3SVK Official. All rights reserved.
-The research tracks, problem statements, documentation, frameworks, and structural designs published in this repository are the exclusive intellectual property of 3SVK, protected under the Indian Copyright Act, 1957, and international copyright treaties.
-Permitted Use:Registered participants may use the provided templates and resources strictly for the purpose of competing in the National Research & Innovation Challenge Season 3. 
-Legal Prohibition:** In accordance with the Copyright Act of India, any unauthorized reproduction, redistribution, adaptation, commercial exploitation, or plagiarism of these works without explicit written consent from 3SVK constitutes an infringement under Section 51 and is punishable under Section 63 and other applicable provisions of Indian law.
+* **Core Innovation Module 1 (Edge AI Computer Vision & Proactive Sensing):**  
+  An autonomous hardware perimeter node combining Arduino Uno and ESP32 microcontrollers with an environmental sensor matrix (MQ-2 / MQ-135 combustible gas and smoke detectors, infrared flame sensors, and ultrasonic perimeter tripwires)[span_13](start_span)[span_13](end_span). The visual intelligence layer integrates an ESP32-CAM executing lightweight edge-AI TinyML models to draw real-time bounding boxes around approaching wildlife species and early-stage smoke plumes[span_14](start_span)[span_14](end_span).
 
-## Official Citation
-### Published Research Articles (Season 3)
+* **Core Innovation Module 2 (Multi-Tier Zero-Latency Emergency Alerts):**  
+  A fail-safe physical response mechanism[span_15](start_span)[span_15](end_span). Upon threshold verification, edge nodes immediately trigger a local high-decibel siren while simultaneously firing off-grid emergency SMS alerts to forest officials and village leaders via an onboard SIM800L GSM module—operating seamlessly without reliance on internet connectivity[span_16](start_span)[span_16](end_span).
 
-* [Article 1: Artificial Intelligence Frameworks in Modern Cloud Architecture](articles/paper-1.md)
-* [Article 2: Decentralized Data Management and Cryptographic Protocols](articles/paper-2.md)
-* [Article 3: Scalable Microservices and Automated Deployment Strategies](articles/paper-3.md)
-* [Article 4: IoT Edge Computing and Real-Time Data Analytics](articles/paper-4.md)
-* [Article 5: Automated Threat Detection in Enterprise Network Security](articles/paper-5.md)
-* [Article 6: Optimized Resource Allocation in Hybrid Cloud Environments](articles/paper-6.md)
+* **Communication & Cloud Automation Protocol:**  
+  A dual-layer synchronization pipeline combining localized edge mesh triggers with an HTTP POST JSON telemetry transmission routed to an interactive live web console[span_17](start_span)[span_17](end_span). Critical hazard tokens trigger automated cloud orchestration via UiPath integration services for multi-channel email, SMS dispatch, and auditable incident timestamping[span_18](start_span)[span_18](end_span).
 
-If you use, reference, or build upon this research series, please cite it via our permanent Zenodo DOI:
+---
 
-> 3SVK Official. (2026). 3SVK Research Series Season 3: Official Archive & Proceedings. Zenodo. https://doi.org/10.5281/zenodo.22008262
+## 4. Proven Performance Metrics (Benchmark Reference)
+
+| Metric Focus | Operational Benchmark | Measured System Performance |
+| :--- | :--- | :--- |
+| **Response Latency**[span_19](start_span)[span_19](end_span) | Hours (Manual Patrolling / Satellite Pass)[span_20](start_span)[span_20](end_span) | **Sub-second edge trigger; SMS sent within seconds**[span_21](start_span)[span_21](end_span) |
+| **Early Fire / Smoke Accuracy**[span_22](start_span)[span_22](end_span) | Visual human line-of-sight[span_23](start_span)[span_23](end_span) | **98.2% detection accuracy**[span_24](start_span)[span_24](end_span) |
+| **Wildlife Encroachment Accuracy**[span_25](start_span)[span_25](end_span) | Delayed ground reporting[span_26](start_span)[span_26](end_span) | **94.7% boundary intrusion tracking**[span_27](start_span)[span_27](end_span) |
+| **Off-Grid Power Autonomy**[span_28](start_span)[span_28](end_span) | Grid-dependent / frequent battery swap | **100% off-grid operation via solar harvesting loop**[span_29](start_span)[span_29](end_span) |
+
+---
+
+## 5. Supporting Project Deliverables & Research Repositories
+
+* **Official Source Code (GitHub):**  
+  https://github.com/devendrasinghbisht238-oss/DEVELOPMENT-X-1.0-0069.git[span_30](start_span)[span_30](end_span)
+* **Interactive Live Edge Monitoring Dashboard:**  
+  https://devendrasinghbisht238-oss.github.io/DEVELOPMENT-X-1.0-0069/[span_31](start_span)[span_31](end_span)
+* **System Demonstration Video:**  
+  https://youtu.be/weRUsueUOPg[span_32](start_span)[span_32](end_span)
+* **Full Technical Presentation & Research Document (Google Drive):**  
+  https://drive.google.com/file/d/1UV8z-mn0dEeeuYMy-mo136_5q6tvZJRS/view?usp=drivesdk[span_33](start_span)[span_33](end_span)
