@@ -1,0 +1,178 @@
+{
+  "experiment_info": {
+    "date": "2026-09-09",
+    "random_seed": 42,
+    "dataset": "synthetic",
+    "n_samples": 5000,
+    "anomaly_ratio": 0.05,
+    "train_val_test_split": "70/15/15",
+    "window_size": 60,
+    "calibration_method": "f1_optimize"
+  },
+  "baselines": {
+    "centralized": {
+      "name": "B1 - Centralized Detector",
+      "description": "All data transmitted to cloud for processing with HEAVY model (LSTM Autoencoder)",
+      "detection_metrics": {
+        "true_positive": 47,
+        "true_negative": 101,
+        "false_positive": 543,
+        "false_negative": 0,
+        "accuracy": 0.2142,
+        "precision": 0.0797,
+        "recall": 1.0000,
+        "f1": 0.1476,
+        "false_positive_rate": 0.8432,
+        "false_negative_rate": 0.0,
+        "roc_auc": 0.6190,
+        "pr_auc": 0.0814
+      },
+      "system_metrics": {
+        "inference_latency_mean_ms": 101.13,
+        "inference_latency_std_ms": 0.40,
+        "inference_latency_min_ms": 100.64,
+        "inference_latency_max_ms": 106.11,
+        "inference_latency_p50_ms": 101.06,
+        "inference_latency_p95_ms": 101.82,
+        "inference_latency_p99_ms": 102.43,
+        "cpu_utilization_mean_percent": 59.66,
+        "cpu_utilization_std_percent": 22.69,
+        "cpu_utilization_min_percent": 0.0,
+        "cpu_utilization_max_percent": 70.8,
+        "memory_utilization_mean_percent": 77.88,
+        "memory_utilization_std_percent": 0.04,
+        "memory_utilization_min_percent": 77.8,
+        "memory_utilization_max_percent": 77.9,
+        "data_transmitted_bytes": 331680,
+        "total_processing_time_seconds": 0.79
+      },
+      "calibration": {
+        "calibrated_threshold": 0.359699,
+        "validation_f1": 0.2146
+      }
+    },
+    "static_edge": {
+      "name": "B2 - Static Edge Detector",
+      "description": "Local processing with fixed STANDARD model (Autoencoder)",
+      "detection_metrics": {
+        "true_positive": 10,
+        "true_negative": 590,
+        "false_positive": 54,
+        "false_negative": 37,
+        "accuracy": 0.8683,
+        "precision": 0.1562,
+        "recall": 0.2128,
+        "f1": 0.1802,
+        "false_positive_rate": 0.0839,
+        "false_negative_rate": 0.7872,
+        "roc_auc": 0.6128,
+        "pr_auc": 0.1123
+      },
+      "system_metrics": {
+        "inference_latency_mean_ms": 0.39,
+        "inference_latency_std_ms": 0.13,
+        "inference_latency_min_ms": 0.23,
+        "inference_latency_max_ms": 1.91,
+        "inference_latency_p50_ms": 0.37,
+        "inference_latency_p95_ms": 0.56,
+        "inference_latency_p99_ms": 0.76,
+        "cpu_utilization_mean_percent": 37.90,
+        "cpu_utilization_std_percent": 29.10,
+        "cpu_utilization_min_percent": 0.0,
+        "cpu_utilization_max_percent": 62.8,
+        "memory_utilization_mean_percent": 77.30,
+        "memory_utilization_std_percent": 0.0,
+        "memory_utilization_min_percent": 77.3,
+        "memory_utilization_max_percent": 77.3,
+        "data_transmitted_bytes": 30720,
+        "total_processing_time_seconds": 0.28
+      },
+      "calibration": {
+        "calibrated_threshold": 0.481695,
+        "validation_f1": 0.2384
+      }
+    },
+    "adaptive_edge": {
+      "name": "B3 - Proposed Adaptive Edge Detector",
+      "description": "Local processing with adaptive controller selecting between LIGHT/STANDARD/HEAVY models",
+      "detection_metrics": {
+        "true_positive": 10,
+        "true_negative": 590,
+        "false_positive": 54,
+        "false_negative": 37,
+        "accuracy": 0.8683,
+        "precision": 0.1562,
+        "recall": 0.2128,
+        "f1": 0.1802,
+        "false_positive_rate": 0.0839,
+        "false_negative_rate": 0.7872,
+        "roc_auc": 0.6128,
+        "pr_auc": 0.1123
+      },
+      "system_metrics": {
+        "inference_latency_mean_ms": 0.50,
+        "inference_latency_std_ms": 0.19,
+        "inference_latency_min_ms": 0.24,
+        "inference_latency_max_ms": 2.26,
+        "inference_latency_p50_ms": 0.47,
+        "inference_latency_p95_ms": 0.81,
+        "inference_latency_p99_ms": 1.09,
+        "cpu_utilization_mean_percent": 47.61,
+        "cpu_utilization_std_percent": 29.39,
+        "cpu_utilization_min_percent": 0.0,
+        "cpu_utilization_max_percent": 79.1,
+        "memory_utilization_mean_percent": 79.90,
+        "memory_utilization_std_percent": 0.0,
+        "memory_utilization_min_percent": 79.9,
+        "memory_utilization_max_percent": 79.9,
+        "data_transmitted_bytes": 30720,
+        "total_processing_time_seconds": 0.43
+      },
+      "calibration": {
+        "calibrated_threshold": 0.481695,
+        "validation_f1": 0.2384
+      },
+      "controller": {
+        "controller_decisions": 691,
+        "adaptive_behavior": "Controller made resource-aware decisions, falling back to STANDARD mode due to resource constraints"
+      }
+    }
+  },
+  "comparisons": {
+    "edge_vs_centralized_latency_reduction": {
+      "static_edge_percent": 99.61,
+      "adaptive_edge_percent": 99.51,
+      "note": "Latency reduction due to network elimination (architectural advantage, not algorithmic)"
+    },
+    "edge_vs_centralized_data_reduction": {
+      "static_edge_percent": 90.74,
+      "adaptive_edge_percent": 90.74,
+      "note": "Data reduction due to local processing (architectural advantage)"
+    },
+    "adaptive_vs_static_cpu": {
+      "difference_percent": 25.5,
+      "adaptive_higher": true,
+      "note": "Adaptive has higher CPU due to controller overhead and resource monitoring"
+    },
+    "detection_comparison": {
+      "centralized_f1": 0.1476,
+      "static_edge_f1": 0.1802,
+      "adaptive_edge_f1": 0.1802,
+      "best_f1": "static_edge and adaptive_edge (tied)",
+      "note": "Edge methods achieve better F1 due to better precision"
+    }
+  },
+  "methodology_notes": {
+    "threshold_calibration": "All three systems use validation-based threshold calibration (F1 optimization) to prevent test-set leakage",
+    "cpu_measurement": "Centralized baseline now uses actual CPU measurement (not hardcoded 0.0)",
+    "latency_measurement": "Centralized includes network latency (uplink + downlink + inference), Edge systems measure local inference only",
+    "communication": "Edge systems transmit only anomaly events (30,720 bytes), Centralized transmits all data (331,680 bytes)",
+    "adaptive_behavior": "Adaptive controller makes resource-aware decisions but falls back to STANDARD mode under current resource constraints"
+  },
+  "limitations": {
+    "dataset": "Synthetic data may not reflect real-world performance",
+    "adaptive_tuning": "Controller weights/thresholds may need domain-specific calibration for better model switching",
+    "single_run": "Results from single run; multiple runs with statistical reporting recommended for production",
+    "detection_performance": "All methods have low F1 scores (<0.2), indicating challenging detection task or need for model improvement"
+  }
+}

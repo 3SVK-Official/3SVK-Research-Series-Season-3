@@ -1,0 +1,115 @@
+# Default configuration for Adaptive Edge-AI Framework
+
+# Data configuration
+data:
+  dataset: "nab"  # Numenta Anomaly Benchmark
+  data_path: "data/"
+  window_size: 60
+  sampling_rate: 1
+  train_test_split: 0.8
+  normalize: true
+  normalization_method: "minmax"  # "minmax" or "zscore"
+
+# Preprocessing configuration
+preprocessing:
+  feature_engineering: true
+  rolling_features:
+    - "mean"
+    - "std"
+    - "min"
+    - "max"
+  dimensionality_reduction: false
+  pca_components: null
+
+# Adaptive controller configuration
+controller:
+  # Utility function weights
+  weights:
+    cpu: 0.3
+    memory: 0.2
+    latency: 0.2
+    confidence: 0.2
+    transmit_cost: 0.05
+    complexity_cost: 0.05
+  
+  # Thresholds
+  thresholds:
+    cpu: 80.0  # percentage
+    memory: 80.0  # percentage
+    latency_max: 100.0  # ms
+    anomaly_high: 0.8
+    anomaly_low: 0.5
+  
+  # Decision frequency (every N samples)
+  decision_frequency: 1
+
+# Model configuration
+models:
+  # LIGHT mode: Isolation Forest
+  light:
+    n_estimators: 100
+    max_samples: "auto"
+    contamination: 0.1
+    random_state: 42
+  
+  # STANDARD mode: Autoencoder
+  standard:
+    hidden_dims: [32, 16, 8]
+    activation: "relu"
+    epochs: 50
+    batch_size: 32
+    learning_rate: 0.001
+    early_stopping_patience: 5
+    random_state: 42
+  
+  # HEAVY mode: LSTM Autoencoder
+  heavy:
+    hidden_dim: 64
+    num_layers: 2
+    dropout: 0.2
+    epochs: 100
+    batch_size: 32
+    learning_rate: 0.001
+    early_stopping_patience: 10
+    random_state: 42
+
+# Buffer configuration
+buffer:
+  size: 1000
+  type: "fifo"  # "fifo" or "circular"
+
+# Evaluation configuration
+evaluation:
+  metrics:
+    - "accuracy"
+    - "precision"
+    - "recall"
+    - "f1"
+    - "roc_auc"
+    - "pr_auc"
+    - "false_positive_rate"
+    - "false_negative_rate"
+  
+  # System metrics to track
+  system_metrics:
+    - "inference_latency"
+    - "end_to_end_latency"
+    - "cpu_utilization"
+    - "memory_utilization"
+    - "data_transmitted"
+    - "processing_time"
+
+# Experiment configuration
+experiments:
+  random_seed: 42
+  num_runs: 5  # for statistical significance
+  resource_constraints:
+    cpu_limits: [30, 50, 70, 90]  # percentage
+    bandwidth_limits: [1, 5, 10, 50]  # Mbps
+    latency_simulations: [10, 50, 100, 200]  # ms
+
+# Logging configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  log_file: "results/experiment.log"
+  console_output: true
