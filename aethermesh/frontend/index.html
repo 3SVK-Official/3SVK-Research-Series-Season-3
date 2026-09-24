@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AetherMesh | Autonomous Predictive Self-Healing Multi-Cloud Mesh</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Floating Toast Notifications -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-logo-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="brand-title-wrap">
+        <h1>
+          AetherMesh Control Plane
+          <span class="challenge-badge">3SVK Challenge Grand Final</span>
+        </h1>
+        <div class="brand-subtitle">Autonomous Predictive Self-Healing Multi-Cloud Mesh via GNN & DRL</div>
+      </div>
+    </div>
+
+    <div class="header-status-strip">
+      <div class="vector-clock-badge" title="CRDT Lamport Vector Clocks Across Multi-Cloud Control Planes">
+        <span class="vc-item aws">AWS: <strong id="vcAws">0</strong></span>
+        <span style="opacity: 0.3;">|</span>
+        <span class="vc-item gcp">GCP: <strong id="vcGcp">0</strong></span>
+        <span style="opacity: 0.3;">|</span>
+        <span class="vc-item azure">AZR: <strong id="vcAzure">0</strong></span>
+      </div>
+
+      <div class="connection-pill" id="connPill">
+        <div class="pulsing-dot"></div>
+        <span id="connStatusText">eBPF TELEMETRY STREAM</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- KPI Metrics Strip -->
+  <section class="kpi-strip">
+    <div class="glass-panel kpi-card kpi-p99">
+      <div class="kpi-label">Cluster P99 Latency</div>
+      <div class="kpi-value-row">
+        <span class="kpi-val" id="metricP99">18.4</span>
+        <span class="kpi-unit">ms</span>
+      </div>
+      <div class="kpi-subtext" id="metricP99Sub">▼ 95.5% vs Reactive Baseline</div>
+    </div>
+
+    <div class="glass-panel kpi-card kpi-err">
+      <div class="kpi-label">HTTP 5xx Error Rate</div>
+      <div class="kpi-value-row">
+        <span class="kpi-val" id="metricErr">0.02</span>
+        <span class="kpi-unit">%</span>
+      </div>
+      <div class="kpi-subtext" id="metricErrSub">99.999% SLA Compliant</div>
+    </div>
+
+    <div class="glass-panel kpi-card kpi-gnn">
+      <div class="kpi-label">GNN Cascade Risk Score</div>
+      <div class="kpi-value-row">
+        <span class="kpi-val" id="metricRisk">0.12</span>
+        <span class="kpi-unit">/ 1.0</span>
+      </div>
+      <div class="kpi-subtext" id="metricRiskSub">ST-GNN Horizon: Stable</div>
+    </div>
+
+    <div class="glass-panel kpi-card kpi-cost">
+      <div class="kpi-label">Egress Cost Optim.</div>
+      <div class="kpi-value-row">
+        <span class="kpi-val" id="metricCost">51.8</span>
+        <span class="kpi-unit">% Saved</span>
+      </div>
+      <div class="kpi-subtext">Locality-Aware Mesh Routing</div>
+    </div>
+
+    <div class="glass-panel kpi-card kpi-acts">
+      <div class="kpi-label">DRL Self-Healing Actions</div>
+      <div class="kpi-value-row">
+        <span class="kpi-val" id="metricActions">0</span>
+        <span class="kpi-unit">dispatched</span>
+      </div>
+      <div class="kpi-subtext" id="metricRewardSub">Policy Reward: +0.0</div>
+    </div>
+  </section>
+
+  <!-- Main Grid -->
+  <main class="dashboard-grid">
+
+    <!-- Left Column: Topology Canvas & Cascade Blast Horizon -->
+    <div class="topology-column">
+      
+      <!-- Interactive Graph Panel -->
+      <section class="glass-panel topology-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="6" cy="6" r="3"/><circle cx="18" cy="18" r="3"/><circle cx="6" cy="18" r="3"/>
+              <line x1="8.5" y1="7.5" x2="15.5" y2="16.5"/><line x1="6" y1="9" x2="6" y2="15"/>
+            </svg>
+            Multi-Cloud Service Mesh Topology (Real-Time GNN State)
+          </div>
+          <div class="legend-group">
+            <div class="legend-item"><span class="legend-swatch swatch-healthy"></span> Healthy</div>
+            <div class="legend-item"><span class="legend-swatch swatch-warning"></span> GNN Warning</div>
+            <div class="legend-item"><span class="legend-swatch swatch-critical"></span> Critical / Cascade</div>
+            <div class="legend-item"><span class="legend-swatch swatch-healed"></span> DRL Healed</div>
+          </div>
+        </div>
+
+        <div class="topology-canvas-container">
+          <div class="cloud-zones-overlay">
+            <div class="cloud-zone-tag tag-aws">AWS us-east-1 (Core Tier)</div>
+            <div class="cloud-zone-tag tag-gcp">GCP us-central1 (Analytics & Tx)</div>
+            <div class="cloud-zone-tag tag-azure">Azure eastus2 (Auth & Edge)</div>
+          </div>
+          <canvas id="topologyCanvas"></canvas>
+        </div>
+      </section>
+
+      <!-- Sub Panels Row: Blast Radius Horizon & Route Persistence -->
+      <div class="sub-panels-row">
+        <!-- Blast Radius Horizon -->
+        <section class="glass-panel blast-radius-box">
+          <div class="panel-title" style="font-size: 0.9rem;">
+            ⚡ GNN Cascading Blast Radius Radar
+          </div>
+          <div id="blastAlertBanner" class="blast-alert-banner stable">
+            <div id="blastAlertIcon">🛡️</div>
+            <div style="flex: 1;">
+              <div id="blastAlertTitle" style="font-weight: 700; font-size: 0.85rem;">Cluster Topology Harmonized</div>
+              <div id="blastAlertDesc" style="font-size: 0.76rem; color: var(--text-secondary);">
+                All 8 microservices operating within safe bounds. Zero cascade threat predicted.
+              </div>
+            </div>
+          </div>
+          <div id="blastPathWrap" class="blast-path-chips"></div>
+        </section>
+
+        <!-- Route Distribution Table -->
+        <section class="glass-panel blast-radius-box">
+          <div class="panel-title" style="font-size: 0.9rem;">
+            🌐 Multi-Cloud xDS Route Weight Distribution
+          </div>
+          <div id="routeTableContainer" style="margin-top: 10px; font-size: 0.78rem; font-family: var(--font-mono);">
+            <!-- Rendered via JS -->
+          </div>
+        </section>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Control Sidebar -->
+    <aside class="control-sidebar">
+
+      <!-- Master Autonomous Mode Toggle -->
+      <div class="glass-panel master-toggle-card">
+        <div class="toggle-header">
+          <span class="toggle-title" id="autoModeLabel">GNN Autonomous Self-Healing</span>
+          <label class="switch">
+            <input type="checkbox" id="autonomousToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="toggle-description" id="autoModeDesc">
+          <strong>ACTIVE:</strong> The GNN continuously forecasts cascading bottleneck risks and triggers pre-emptive DRL mitigations (traffic weight shifts & cordoning) in under 2 seconds.
+        </div>
+      </div>
+
+      <!-- Node Inspector Card (shown when a node is clicked) -->
+      <div class="glass-panel inspector-card" id="nodeInspector">
+        <div class="panel-header" style="padding: 0 0 10px 0;">
+          <div class="panel-title" id="insTitle" style="font-size: 0.95rem;">Service Inspector</div>
+          <button id="insCloseBtn" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.1rem;">&times;</button>
+        </div>
+        <div class="inspector-meta-row">
+          <span id="insCloudBadge" class="challenge-badge">AWS</span>
+          <span id="insTierBadge" style="font-family: var(--font-mono);">core-api</span>
+          <span id="insReplicas">3 Pods</span>
+        </div>
+        <div class="inspector-metrics-grid">
+          <div class="ins-metric-box">
+            <div class="ins-metric-label">CPU Utilization</div>
+            <div class="ins-metric-val" id="insCpu">0%</div>
+          </div>
+          <div class="ins-metric-box">
+            <div class="ins-metric-label">P99 Latency</div>
+            <div class="ins-metric-val" id="insP99">0ms</div>
+          </div>
+          <div class="ins-metric-box">
+            <div class="ins-metric-label">Inbound RPS</div>
+            <div class="ins-metric-val" id="insRps">0</div>
+          </div>
+          <div class="ins-metric-box">
+            <div class="ins-metric-label">Failure Risk</div>
+            <div class="ins-metric-val" id="insRisk">0%</div>
+          </div>
+        </div>
+        <div class="inspector-manual-actions">
+          <button class="btn-ins-action" id="btnInsReroute">Shift Traffic</button>
+          <button class="btn-ins-action" id="btnInsCordon">Cordon / Isolate</button>
+          <button class="btn-ins-action" id="btnInsNormalize">Normalize</button>
+        </div>
+      </div>
+
+      <!-- Chaos Engineering Studio -->
+      <div class="glass-panel chaos-card">
+        <div class="panel-title" style="font-size: 0.95rem;">
+          🔥 Chaos Engineering Studio
+        </div>
+        <div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 4px;">
+          Inject real-time production faults to evaluate AetherMesh GNN prediction & DRL self-healing.
+        </div>
+        <div id="activeChaosBanner" class="active-chaos-banner">
+          <strong style="color: var(--accent-crimson);">ACTIVE DISASTERS:</strong>
+          <span id="activeChaosList">None</span>
+        </div>
+        <div class="chaos-actions-grid">
+          <button class="chaos-btn" id="chaosPayment">
+            <span>💳 Payment Gateway CPU Storm</span>
+            <span>⚡</span>
+          </button>
+          <button class="chaos-btn" id="chaosDb">
+            <span>🗄️ Inventory DB Thread Contention</span>
+            <span>⚡</span>
+          </button>
+          <button class="chaos-btn" id="chaosWan">
+            <span>🌐 AWS ↔ GCP WAN Degradation</span>
+            <span>⚡</span>
+          </button>
+          <button class="chaos-btn" id="chaosStorm">
+            <span>🌪️ Cascading Retry Amplification</span>
+            <span>⚡</span>
+          </button>
+          <button class="chaos-btn btn-reset" id="chaosReset">
+            <span>🔄 Neutralize Faults & Reset Cluster</span>
+            <span>✓</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- DRL Self-Healing Audit Stream -->
+      <div class="glass-panel log-card">
+        <div class="panel-title" style="font-size: 0.95rem;">
+          📜 DRL Mitigation & CRDT Audit Stream
+        </div>
+        <div class="log-terminal" id="logTerminal">
+          <div class="log-entry">
+            <span class="log-time">[BOOT]</span> <span class="log-type">AETHERMESH READY</span>: eBPF telemetry hooks attached across AWS, GCP, and Azure.
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
