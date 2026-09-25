@@ -1,163 +1,270 @@
-# AetherMesh: Autonomous Predictive Self-Healing Multi-Cloud Mesh
-**Track:** Cloud Infrastructure & Artificial Intelligence  
-**3SVK National Cloud & AI Innovation Challenge**
+3SVK-Research-Series-Season-3
+Official research archive, documentation, and proceedings for the National Research & Innovation Challenge Season 3 by 3SVK.
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.116+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Python 3.11](https://img.shields.io/badge/Python-3.11+-3776AB?logo=python&logoColor=white)](https://python.org)
-[![GNN](https://img.shields.io/badge/AI-Spatio--Temporal%20GNN-8b5cf6)](https://en.wikipedia.org/wiki/Graph_neural_network)
-[![DRL](https://img.shields.io/badge/Policy-Constrained%20PPO%20DRL-00f0ff)](https://spinningup.openai.com)
-[![Status](https://img.shields.io/badge/3SVK%20Status-Finalist%20Ready-10b981)]()
+🔒 Intellectual Property, Copyright & Legal Notice
+© 2026 3SVK Official. All rights reserved.
 
----
+The research tracks, problem statements, documentation, frameworks, and structural designs published in this repository are the exclusive intellectual property of 3SVK, protected under the Indian Copyright Act, 1957, and international copyright treaties.
 
-## 1. Executive Summary & Challenge Alignment
+Permitted Use: Registered participants may use the provided templates and resources strictly for the purpose of competing in the National Research & Innovation Challenge Season 3. Legal Prohibition: In accordance with the Copyright Act of India, any unauthorized reproduction, redistribution, adaptation, commercial exploitation, or plagiarism of these works without explicit written consent from 3SVK constitutes an infringement under Section 51 and is punishable under Section 63 and other applicable provisions of Indian law.
 
-In modern multi-cloud architectures across **AWS**, **GCP**, and **Azure**, microservice failure propagation exhibits non-linear "death spirals" (cascading blast radiuses caused by upstream retries and thread starvation). Traditional service meshes (Istio, Linkerd) rely on **reactive** 5xx threshold circuit-breakers—by the time they trip, the cascading collapse has already propagated across the enterprise dependency graph.
+📚 Official Citation
+If you use, reference, or build upon this research series, please cite it via our permanent Zenodo DOI:
 
-**AetherMesh** represents a foundational paradigm shift from *reactive* alerting to *autonomous predictive self-healing*:
-1. **Core Innovation Module 1 (The Spatio-Temporal GNN Predictor):** Continuously models the runtime service topology as a dynamic attributed graph $\mathcal{G}_t = (\mathcal{V}_t, \mathcal{E}_t, \mathbf{X}_t, \mathbf{W}_t)$. Using online Graph Attention (GATv2) message-passing combined with temporal GRU memory, it predicts cascading failure probabilities and bottleneck blast radiuses **30 to 120 seconds before failure manifests**.
-2. **Core Innovation Module 2 (The Deep Reinforcement Learning Orchestrator):** A constrained Actor-Critic PPO policy layer that autonomously executes sub-second micro-mitigations (dynamic traffic re-weighting, progressive node cordoning, and upstream retry throttling) via dynamic Envoy xDS instructions.
-3. **CRDT Mesh State Persistence Layer:** Eliminates split-brain partitions across multi-cloud WAN boundaries using state-based Conflict-Free Replicated Data Types (OR-Sets and PN-Counters) with Lamport vector clocks.
+3SVK Official. (2026). 3SVK Research Series Season 3: Official Archive & Proceedings. Zenodo. https://doi.org/10.5281/zenodo.22008262
 
-Official patent-style proceedings and technical disclosures can be found in [`PROCEEDINGS.md`](./PROCEEDINGS.md).
+Adaptive Edge-AI Framework for Real-Time Anomaly Detection
+A resource-aware adaptive framework for real-time anomaly detection at the edge, dynamically balancing detection accuracy with computational constraints.
 
----
+Research Objective
+This project investigates whether an adaptive, resource-aware edge-AI framework can detect anomalies in real time while reducing inference latency, network/data-transfer overhead, and computational resource consumption compared with a conventional centralized detection architecture without materially degrading detection performance.
 
-## 2. System Architecture
+Problem Addressed
+Traditional centralized anomaly detection systems incur high latency and network overhead, while static edge-based approaches lack flexibility to adapt to varying resource conditions. Existing edge-based systems typically employ fixed model complexity, leading to either over-provisioning (complex models exceeding available resources) or under-provisioning (simple models failing to detect subtle anomalies).
 
-```
-                          AETHERMESH END-TO-END ARCHITECTURE
+Implemented Approach
+The framework implements a utility-based adaptive controller that:
 
-    [ AWS us-east-1 ]            [ GCP us-central1 ]           [ Azure eastus2 ]
-    • api-gateway                • payment-service             • auth-service
-    • order-service              • recommendation-engine       • user-profile-db
-    • inventory-db                                             • notification-worker
-          │                              │                              │
-          └──────────────────────────────┼──────────────────────────────┘
-                                         ▼
-                 +------------------------------------------------+
-                 |    COMMUNICATION LAYER (eBPF Kernel Taps)      |
-                 |  Low-overhead TCP RTT, Queue, Packet Telemetry |
-                 +------------------------------------------------+
-                                         │
-                                         ▼
-                 +------------------------------------------------+
-                 |   CORE MODULE 1: SPATIO-TEMPORAL GNN ENGINE    |
-                 |  - Graph Attention Network (GATv2) Weights     |
-                 |  - Recurrent Temporal Memory Gating (GRU)      |
-                 |  - Cascading Failure Horizon Probability       |
-                 +------------------------------------------------+
-                                         │
-                                         ▼ (Risk Threshold >= 0.70)
-                 +------------------------------------------------+
-                 |     CORE MODULE 2: DRL HEALING ORCHESTRATOR    |
-                 |  - Constrained PPO Policy Decision Engine      |
-                 |  - Sub-second Envoy xDS Dynamic Route Shift    |
-                 |  - Cross-Cloud Failover & Replica Elasticity   |
-                 +------------------------------------------------+
-                                         │
-                                         ▼
-                 +------------------------------------------------+
-                 |      CRDT PERSISTENCE & VECTOR CLOCK SYNC      |
-                 |  Deterministic LUB Merges (Zero Split-Brain)   |
-                 +------------------------------------------------+
-                                         │
-                                         ▼
-                 +------------------------------------------------+
-                 |         CYBER MISSION CONTROL DASHBOARD        |
-                 |   Real-time HTML5 Canvas Topology & Chaos Lab  |
-                 +------------------------------------------------+
-```
+Dynamically selects between three detection models of varying complexity based on real-time CPU, memory, and network conditions
+Optimizes transmission decisions to balance local processing with cloud offloading when beneficial
+Employs a mathematically defined utility function that explicitly considers CPU, memory, latency, detection confidence, transmission costs, and model complexity
+Uses validation-based threshold calibration to prevent test-set leakage
+Adaptive Controller
+The adaptive controller maintains a state vector:
 
----
+s = (cpu_util, mem_util, net_latency, bandwidth, data_difficulty, anomaly_confidence)
+At each decision point, the controller selects a model mode m ∈ {LIGHT, STANDARD, HEAVY} and transmission decision t ∈ {LOCAL_ONLY, TRANSMIT} by maximizing:
 
-## 3. Quickstart: Running the Functional MVP
+U(m, t) = w_cpu * (1 - cpu_cost(m)) + 
+          w_mem * (1 - mem_cost(m)) + 
+          w_lat * (1 - latency_cost(m, t)) + 
+          w_conf * confidence(m) - 
+          w_trans * trans_cost(t) - 
+          w_comp * complexity_cost(m)
+Subject to feasibility constraints:
 
-The prototype is completely self-contained and uses standard Python 3.11 libraries (`fastapi`, `uvicorn`, `numpy`, `websockets`, `pydantic`).
+cpu_util + cpu_overhead(m) ≤ cpu_threshold
+mem_util + mem_overhead(m) ≤ mem_threshold
+if t = TRANSMIT: net_latency ≤ latency_max
+Dataset
+The framework uses synthetic time-series data with:
 
-### Step 1: Launch the Demo
-Run the single launcher command from the `aethermesh` directory or workspace root:
+5,000 samples
+5% anomaly rate
+Train/Val/Test split: 70/15/15
+Window size: 60 samples
+Normal samples: sinusoidal pattern with Gaussian noise
+Anomaly patterns: spikes, dips, sustained shifts, amplitude changes
+Detection Models
+Three models of increasing complexity are implemented:
 
-```bash
-python aethermesh/run_demo.py
-```
-*(Or from inside `aethermesh/`: `python run_demo.py`)*
+LIGHT: Statistical Z-score based anomaly detector (fast, low memory)
+STANDARD: Autoencoder with reconstruction error (balanced)
+HEAVY: LSTM Autoencoder for temporal patterns (high accuracy, high computational cost)
+Leakage Prevention
+To prevent test-set leakage, all three systems (Centralized, Static Edge, Adaptive Edge) use validation-based threshold calibration with F1 optimization on the validation set before evaluating on the test set.
 
-The launcher will:
-- Initialize the Spatio-Temporal GNN Predictor and DRL Orchestrator.
-- Boot the Multi-Cloud Cluster Simulator (AWS, GCP, Azure nodes).
-- Start the FastAPI backend and WebSocket engine on `http://127.0.0.1:8000`.
-- Automatically open your default web browser to the **AetherMesh Mission Control Dashboard**.
+Validation-Based Threshold Calibration
+The ThresholdCalibrator class implements multiple calibration methods:
 
----
+f1_optimize: Maximize F1 score on validation data (used in experiments)
+percentile: Use fixed percentile (e.g., 95th)
+precision_constrained: Maximize recall subject to precision constraint
+recall_constrained: Maximize precision subject to recall constraint
+This ensures fair comparison between systems and prevents overfitting to the test set.
 
-## 4. Live Demonstration Walkthrough (For Judges & Evaluators)
+Project Structure
+3svk/
+├── configs/                 # Configuration files
+│   └── default_config.yaml
+├── diagrams/                # Architecture diagrams
+│   └── architecture.md
+├── experiments/             # Experiment scripts
+│   ├── baseline_centralized/
+│   ├── baseline_static_edge/
+│   ├── proposed/
+│   ├── ablation/
+│   ├── verify_results.py
+│   └── generate_figures.py
+├── figures/                 # Generated figures and tables
+├── references/              # Literature review and research gap
+│   ├── literature_review.md
+│   └── research_gap.md
+├── results/                 # Experiment results (JSON)
+├── src/                     # Source code
+│   ├── adaptive/           # Adaptive controller
+│   ├── cloud/              # Cloud coordinator
+│   ├── data/               # Data loading and streaming
+│   ├── edge/               # Edge processor
+│   ├── evaluation/         # Metrics and monitoring
+│   ├── models/             # Detection models
+│   └── preprocessing/      # Data preprocessing
+├── tests/                  # Unit tests
+├── requirements.txt         # Python dependencies
+├── research-paper.md       # Complete research paper
+└── README.md              # This file
+Installation
+Prerequisites
+Python 3.14.6
+pip
+Setup
+Clone the repository:
+git clone <repository-url>
+cd 3svk
+Install dependencies:
+python -m pip install -r requirements.txt
+Usage
+Running Experiments
+Run All Experiments
+python experiments/verify_results.py
+This will:
 
-Follow these steps to demonstrate the contrast between **AetherMesh Autonomous Mode** and the **Traditional Reactive Baseline**:
+Run baseline centralized experiment
+Run baseline static edge experiment
+Run proposed adaptive edge experiment
+Save results to results/ directory
+Run Individual Experiments
+# Baseline A: Centralized Detection
+python experiments/baseline_centralized/run.py
 
-### Scenario A: Autonomous Predictive Self-Healing (AetherMesh ON)
-1. Ensure the **"GNN Autonomous Self-Healing"** switch in the right sidebar is **ACTIVE (ON)**.
-2. In the **Chaos Engineering Studio**, click:
-   - **`💳 Payment Gateway CPU Storm`** (simulates payment gateway thread starvation).
-3. **Observe the Reaction:**
-   - **T = 1.0s:** The GNN's multi-head attention weights immediately highlight `payment-service` with an **ELEVATED_RISK** warning.
-   - **T = 1.8s:** The failure probability exceeds $\tau = 0.70$. The **Blast Radius Radar** instantly flags the cascading threat to `order-service` and `api-gateway` with a **35s advance warning lead time**!
-   - **T = 2.0s:** The DRL Orchestrator autonomously triggers `CROSS_CLOUD_FAILOVER_AND_CORDON`:
-     - Diverts 80% traffic from GCP to standby instances on AWS/Azure.
-     - Cordons the saturated primary pod.
-     - Autoscales +2 healthy replicas.
-   - **Result:** Cluster P99 latency stays strictly below **130ms**, HTTP 5xx errors remain at **0.00%**, and downstream services experience zero outage!
-   - Check the **DRL Mitigation & CRDT Audit Stream** to see the Lamport vector clock increment and the positive policy reward (+9.8).
+# Baseline B: Static Edge Detection
+python experiments/baseline_static_edge/run.py
 
----
+# Proposed: Adaptive Edge Framework
+python experiments/proposed/run.py
 
-### Scenario B: Traditional Reactive Mesh Baseline (AetherMesh OFF)
-1. Reset the cluster by clicking **`🔄 Neutralize Faults & Reset Cluster`**.
-2. Toggle the **"GNN Autonomous Self-Healing"** switch to **OFF (Reactive Baseline)**.
-3. In the Chaos Studio, click **`🗄️ Inventory DB Thread Contention`**.
-4. **Observe the Cascading Death Spiral:**
-   - Without AetherMesh's predictive routing, `inventory-db` thread contention stalls queries.
-   - Inbound queues back up into `order-service`, then propagate into `api-gateway`.
-   - Cluster P99 latency surges from **18ms to > 1,800ms**.
-   - HTTP 5xx error rate spikes to **15% - 30%** (cascading failure).
-   - The Blast Radius Radar displays the unchecked spread across the entire multi-cloud graph.
-5. Toggle the **Autonomous Mode switch back ON**:
-   - Within **1 tick**, AetherMesh's DRL policy detects the critical state, cordons the choked path, executes rate-limiting, and restores cluster health back to normal!
+# Ablation Study
+python experiments/ablation/run.py
+Generate Figures and Tables
+python experiments/generate_figures.py
+This will generate:
 
----
+Benchmark comparison table
+Performance comparison plots
+Summary report
+Running Tests
+# Run all tests
+python -m pytest tests/ -v
 
-## 5. Benchmarking Summary
+# Run specific test file
+python -m pytest tests/test_data.py -v
+python -m pytest tests/test_preprocessing.py -v
+python -m pytest tests/test_adaptive.py -v
+Configuration
+Edit configs/default_config.yaml to customize:
 
-| Benchmark Metric | Traditional Reactive (Alertmanager/Istio) | AetherMesh (GNN + DRL) | Impact |
-| :--- | :--- | :--- | :--- |
-| **Mean Time to Detect (MTTD)** | 254.0s (4.2 min) | **1.8s** | **99.3% Reduction** |
-| **Mean Time to Remediate (MTTR)** | 412.0s (6.8 min) | **11.4s** | **97.2% Reduction** |
-| **Pre-Failure Advance Warning** | 0.0s (Post-mortem only) | **46.8s advance lead** | **Predictive Horizon** |
-| **P99 Latency Under Shock Load** | 2,840ms | **128.5ms** | **95.5% Latency Cut** |
-| **Multi-Cloud Egress Incurred** | 412 GB / 10M req | **198.4 GB / 10M req** | **51.8% Egress Saved** |
-| **Availability SLA Adherence** | 99.82% | **99.999%** | **Tier-1 Carrier Grade** |
+Data: Dataset parameters, window size, anomaly ratio
+Preprocessing: Normalization method, feature engineering
+Models: Model architectures and hyperparameters
+Controller: Utility function weights and thresholds
+Evaluation: Metrics to compute
+Experiments: Random seed, sample sizes
+Architecture
+Components
+Data Ingestion (src/data/)
 
----
+DataLoader: Loads and splits datasets
+DataStream: Simulates streaming data with buffering
+Preprocessing (src/preprocessing/)
 
-## 6. Directory Structure
+Preprocessor: Normalization and window creation
+FeatureEngineer: Rolling statistics and difference features
+Detection Models (src/models/)
 
-```
-aethermesh/
-├── PROCEEDINGS.md               # Official 3SVK Innovation Challenge Proceedings & Patent Claims
-├── README.md                    # This document
-├── requirements.txt             # Minimal dependencies (FastAPI, Uvicorn, NumPy, WebSockets)
-├── run_demo.py                  # One-click launcher script
-├── backend/
-│   ├── app.py                   # FastAPI application, WebSocket broadcaster, REST API
-│   ├── gnn_predictor.py         # Core Innovation 1: Spatio-Temporal GNN & GATv2 Attention
-│   ├── drl_orchestrator.py      # Core Innovation 2: Constrained Actor-Critic DRL Agent
-│   ├── cluster_simulator.py     # Multi-cloud telemetry generator & chaos engine
-│   └── state_store.py           # Distributed CRDT persistence layer & vector clocks
-└── frontend/
-    ├── index.html               # Cyber-aesthetic Mission Control dashboard
-    ├── app.js                   # Interactive HTML5 Canvas graph rendering & live telemetry
-    └── style.css                # Dark mode, glassmorphism, responsive cyber styling
-```
+IsolationForestModel: Lightweight statistical detector
+AutoencoderModel: Standard autoencoder
+LSTMAutoencoderModel: Heavy LSTM autoencoder
+Adaptive Controller (src/adaptive/)
 
----
-*Developed for the 3SVK National Cloud & AI Innovation Challenge — Grand Finals.*
+AdaptiveController: Resource-aware decision making with utility function
+Processing (src/edge/, src/cloud/)
+
+EdgeProcessor: Local processing with adaptive model selection
+CloudCoordinator: Centralized processing simulation
+Evaluation (src/evaluation/)
+
+MetricsCalculator: Detection and system metrics
+SystemMonitor: CPU, memory, and network monitoring
+Three Implemented Systems
+1. Centralized Detection (Baseline A)
+All data transmitted to cloud for processing
+Uses HEAVY model (LSTM Autoencoder) in cloud
+No local processing
+No adaptation
+2. Static Edge Detection (Baseline B)
+All data processed locally
+Fixed STANDARD model (Autoencoder)
+No adaptation
+Transmits only anomaly events (30,720 bytes)
+3. Adaptive Edge Framework (Proposed)
+Dynamic local/transmission decision
+Adaptive model selection (LIGHT/STANDARD/HEAVY)
+Resource-aware processing with utility function
+Transmits only anomaly events (30,720 bytes)
+Under current resource constraints, controller primarily selects STANDARD mode
+Experimental Methodology
+Detection Metrics
+Accuracy, Precision, Recall, F1-Score
+ROC-AUC, PR-AUC
+False Positive Rate, False Negative Rate
+Latency Measurement
+Centralized: Includes network transmission (uplink + downlink + inference)
+Edge systems: Measure local inference only
+Reported metrics: mean, std, min, max, p50, p95, p99
+CPU Measurement
+Mean CPU utilization percentage
+Standard deviation
+Min/max values
+Memory Measurement
+Mean memory utilization percentage
+Standard deviation
+Min/max values
+Communication Measurement
+Total data transmitted in bytes
+Edge systems transmit only anomaly events
+Centralized transmits all data
+Current Verified Results
+Results from results/final_results.json (validated on 2026-09-09):
+
+Detection Performance
+Method	Accuracy	Precision	Recall	F1-Score	ROC-AUC	PR-AUC
+Centralized	0.2142	0.0797	1.0000	0.1476	0.6190	0.0814
+Static Edge	0.8683	0.1562	0.2128	0.1802	0.6128	0.1123
+Adaptive Edge (Ours)	0.8683	0.1562	0.2128	0.1802	0.6128	0.1123
+Note: All methods use validation-based threshold calibration (F1 optimization) to prevent test-set leakage. Edge methods achieve better F1 due to improved precision. The adaptive controller makes resource-aware decisions but primarily selects the STANDARD model under current resource constraints.
+
+System Performance
+Method	Latency (ms)	CPU (%)	Memory (%)	Data (bytes)
+Centralized	101.13	59.66	77.88	331,680
+Static Edge	0.39	37.90	77.30	30,720
+Adaptive Edge (Ours)	0.50	47.61	79.90	30,720
+Note: Centralized latency includes network transmission (uplink + downlink + inference). Edge systems measure local inference only. Edge systems transmit only anomaly events (30,720 bytes), while centralized transmits all data (331,680 bytes).
+
+Key Improvements
+Latency: 99.61% reduction vs Centralized (Static Edge), 99.51% reduction vs Centralized (Adaptive Edge)
+Note: Latency reduction is due to network elimination (architectural advantage), not algorithmic improvement
+Data Transmission: 90.74% reduction vs Centralized (both Edge methods)
+Note: Data reduction due to local processing (architectural advantage)
+Detection Performance: Edge methods achieve 22.0% higher F1 vs Centralized (0.1802 vs 0.1476)
+Documentation
+Research Paper: research-paper.md - Complete research paper with methodology, results, and discussion
+Architecture: diagrams/architecture.md - Detailed system architecture
+Literature Review: references/literature_review.md - Related work and background
+Research Gap: references/research_gap.md - Problem statement and contribution
+Reproducibility
+All experiments use fixed random seeds (configured in default_config.yaml) to ensure reproducibility. Results are saved as JSON files in the results/ directory.
+
+Python 3.14.6 Compatibility
+This project is tested and verified to work with Python 3.14.6. All dependencies are compatible with Python 3.14.6.
+
+Limitations
+Synthetic Data: Evaluation on synthetic data may not reflect real-world performance
+Controller Tuning: Utility function weights require domain-specific calibration for optimal model switching
+Single Run: Results from single run; multiple runs with statistical reporting recommended for production
+Detection Performance: All methods have low F1 scores (<0.2), indicating challenging detection task or need for model improvement
+Adaptive Behavior: Under current resource constraints, the adaptive controller primarily selects the STANDARD mode, resulting in behavior similar to static edge processing
+License
+This project is submitted for the 3SVK Challenge.
+
+Contact
+For questions or issues, please refer to the research paper or contact the authors.
