@@ -278,14 +278,17 @@ const sampleMarkdown = `# Lifelong Reusable Intellectual Property & Research Tem
 * **Framework Identifier:** 3SVK-S3-EDGE-AI-SYNC
 
 ## 2. Primary Inventors / Applicants (Placeholder Record)
-* **Applicant 1:** Siripuram Vinod Kumar
+* **Applicant 1:** Shiyam M (Team Leader)
   * **Nationality:** Indian
-  * **Permanent Address:** H.No 4-12/1, Hitech City Main Road, Cyberabad, Hyderabad, Telangana, 500081, India
-* **Applicant 2:** Research Scholar Co-Author
+  * **Permanent Address:** Myleripalayam, Othakalmandapam, Coimbatore - 641032, Tamil Nadu, India
+* **Applicant 2:** Karthikeyan S
   * **Nationality:** Indian
-  * **Permanent Address:** Plot No 88, Innovation Block, Sector 5, Bengaluru, Karnataka, 560103, India
+  * **Permanent Address:** Myleripalayam, Othakalmandapam, Coimbatore - 641032, Tamil Nadu, India
+* **Applicant 3:** Hariharan A
+  * **Nationality:** Indian
+  * **Permanent Address:** Myleripalayam, Othakalmandapam, Coimbatore - 641032, Tamil Nadu, India
 * **Co-Applicant / Academic Mentor:** Dr. A. V. R. S. Sharma, Senior Fellow & Research Director
-  * **Role:** Professor & Department Head, Department of Computer Science & Artificial Intelligence, National Institute of Research & Technology
+  * **Role:** Professor & Department Head, Department of Computer Science & Artificial Intelligence, SREC Coimbatore
 
 ## 3. Core Technical Abstract & Architecture
 * **The Problem Addressed:** High latency (350ms - 800ms baseline), massive network bandwidth consumption (up to 1.5MB/sec per edge node), single-point-of-failure centralized cloud reliance, and severe vulnerability to Byzantine data manipulation during synchronization across heterogeneous, bandwidth-constrained IoT and edge intelligence devices.
