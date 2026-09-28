@@ -1,0 +1,22 @@
+section,metric,value
+Model Comparison,Logistic Regression Accuracy,0.988221436984688
+Model Comparison,Logistic Regression Precision,0.9891137523646356
+Model Comparison,Logistic Regression Recall,0.988221436984688
+Model Comparison,Logistic Regression F1,0.98819945012052
+Model Comparison,Decision Tree Accuracy,1.0
+Model Comparison,Decision Tree Precision,1.0
+Model Comparison,Decision Tree Recall,1.0
+Model Comparison,Decision Tree F1,1.0
+Model Comparison,KNN Accuracy,0.9199057714958776
+Model Comparison,KNN Precision,0.9485710743289318
+Model Comparison,KNN Recall,0.9199057714958776
+Model Comparison,KNN F1,0.9129833923302912
+Model Comparison,Random Forest Accuracy,1.0
+Model Comparison,Random Forest Precision,1.0
+Model Comparison,Random Forest Recall,1.0
+Model Comparison,Random Forest F1,1.0
+Benchmark,Average Latency (ms),0.086390812707422
+Benchmark,Process RSS Memory (MB),144.66796875
+Benchmark,Theoretical Payload Reduction (%),99.6
+Edge-Cloud,Average Payload Reduction (%),99.6
+Edge-Cloud,Prediction Accuracy,1.0
