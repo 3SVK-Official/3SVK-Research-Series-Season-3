@@ -1,205 +1,197 @@
-# Lifelong Reusable Intellectual Property & Research Template
-### 3SVK Research Series — Season 3 Submission
+# AI-Powered Criminal Network Analysis and Identity Intelligence System
+## Research Proceedings — 3SVK Research Series Season 3
 
----
+> **Document status:** Research proposal / system design draft. Replace all bracketed fields and verify every implementation claim before submission.
+>
+> **Primary challenge:** SIH PS189 — AI-Powered Criminal Network Analysis System  
+> **Supporting capability:** PS188-inspired fake identity and document screening  
+> **Project name:** [Confirm final project name]  
+> **Primary inventor/applicant:** [Full name]  
+> **Co-applicants / mentor:** [Add only with their consent]  
+> **Institution / organization:** [Institution name]  
+> **Version/date:** [Version and date]
 
-## 1. Title of the Invention / Project
+## Abstract
 
-- **Project Name:** AetherMesh: Autonomous Predictive Self-Healing Multi-Cloud Mesh via Spatio-Temporal Graph Neural Networks & Deep Reinforcement Learning
-- **Framework Identifier:** 3SVK National Research & Innovation Challenge, Season 3
-- **Track:** Cloud Infrastructure & Artificial Intelligence
-- **Document Reference ID:** 3SVK-AI-CLOUD-2026-AETHERMESH-001
+Investigative records may be distributed across case files, reports, entities, locations, vehicles, and other authorized sources. Inconsistent formats, duplicate records, incomplete identifiers, and weakly documented relationships can make it difficult for an investigator to understand how records relate across cases. This document proposes an AI-assisted system centered on criminal-network analysis, with identity and document screening as a supporting input capability.
 
----
+The proposed workflow normalizes authorized records, extracts entities where suitable, resolves possible duplicates, records relationships with provenance, and represents the resulting information as a temporal knowledge graph. Graph analysis and timeline views can help investigators inspect connections and prioritize leads. Document screening may extract fields from supplied documents and flag inconsistencies or potential signs of manipulation for human review. Each inferred relationship or match should carry its supporting evidence, uncertainty, and source history.
 
-## 2. Primary Inventors / Applicants
+This document describes a proposed architecture and an evaluation plan; it does not claim that all modules have been implemented, connected to official databases, or experimentally validated. No benchmark results are reported because verified measurements have not been supplied. The system is intended only as decision support for authorized personnel. A graph connection, similarity score, or document anomaly must not be treated as proof of criminality or as a basis for an automated adverse legal decision.
 
-- **Lead Architect & Inventor:** `[PRIMARY_INVENTOR_NAME]`
-  - Nationality: Indian
-  - Permanent Address: `[OFFICIAL_POSTAL_ADDRESS_LINE_1, CITY, STATE, PIN_CODE]`
-  - Email: `[PRIMARY_EMAIL@DOMAIN.COM]`
-  - Status: Student / Researcher, `[INSTITUTION_OR_ORGANIZATION]`
-- **Co-Inventor (AI/GNN Systems):** `[CO_INVENTOR_1_NAME]`
-  - Email: `[CO_INVENTOR_1_EMAIL@DOMAIN.COM]`
-  - Affiliation: `[INSTITUTION_OR_ORGANIZATION]`
-- **Co-Inventor (Cloud Mesh & SRE):** `[CO_INVENTOR_2_NAME]`
-  - Email: `[CO_INVENTOR_2_EMAIL@DOMAIN.COM]`
-  - Affiliation: `[INSTITUTION_OR_ORGANIZATION]`
-- **Applicant Organization:** `[INSTITUTE_OR_COMPANY_NAME]`, Department of Computer Science & Cloud Engineering
-- **Applicant Team Registration ID:** `3SVK-NAT-2026-TEAM-AETHERMESH`
+**Keywords:** criminal network analysis, knowledge graph, entity resolution, evidence provenance, document screening, explainable AI, temporal analysis, human-in-the-loop decision support.
 
----
+## 1. Introduction
 
-## 3. Core Technical Abstract & Architecture
+Modern investigations can involve many records about people, organizations, locations, events, vehicles, documents, and communications. Information may be fragmented across sources and may contain spelling differences, aliases, missing values, conflicting timestamps, or duplicate entries. Manual cross-referencing can be time-consuming and may make important connections difficult to inspect.
 
-### The Problem Addressed
-Modern enterprise architectures have evolved from monolithic deployments into deeply nested, heterogeneous multi-cloud and hybrid-cloud microservice topologies operating concurrently across Amazon Web Services (AWS), Google Cloud Platform (GCP), Microsoft Azure, and edge bare-metal nodes. While multi-cloud architectures provide vendor neutrality and disaster isolation, they introduce severe operational brittleness:
-1. **The Microservice Cascade Effect (Death Spiral):** When deep dependencies (such as transactional database connection pools or third-party payment gateways) experience transient thread exhaustion, upstream clients execute aggressive exponential-backoff retries. This amplifies request volume into an $O(N^k)$ retry storm, starving intermediate thread pools and crashing the entire multi-cloud topology.
-2. **Failure of Reactive Circuit Breakers:** Industry-standard service meshes (Istio, Linkerd, Envoy) rely strictly on *reactive heuristics* (e.g., tripping only after 5 consecutive HTTP 503 errors). In deep dependency graphs, by the time a reactive circuit breaker trips, 40–80 upstream services have already suffered cascade collapse.
-3. **Cross-Cloud Egress Inefficiency:** Reactive failover blindly diverts traffic across cloud boundaries, triggering massive cross-provider WAN bandwidth and egress cost spikes.
+The primary focus of this proposal is criminal-network analysis (PS189): organizing authorized investigative records into a structured, inspectable graph and helping investigators explore relationships and changes over time. A supporting identity/document screening capability inspired by PS188 can provide extracted fields and document-review signals to the same evidence workflow.
 
-AetherMesh solves this by shifting multi-cloud resilience from *reactive incident alerting* to **autonomous predictive self-healing**, using Graph Neural Networks and Deep Reinforcement Learning.
+The system is not intended to label a person as criminal merely because the person appears in a record or is connected to another entity. It should preserve the difference between source facts, algorithmic inferences, unverified hypotheses, and conclusions made by an authorized human reviewer.
 
----
+## 2. Problem statement
 
-### Core Innovation Module 1 — Spatio-Temporal Graph Neural Network (ST-GNN) Failure Predictor
-Rather than treating telemetry as isolated time-series metrics, AetherMesh models the dynamic runtime service mesh as a continuous, directed, weighted spatio-temporal graph:
+Investigators may need to connect information from multiple authorized records despite inconsistent identifiers, duplicated entities, incomplete relationships, and varying evidence quality. A useful analysis system should:
 
-$$\mathcal{G}_t = (\mathcal{V}_t, \mathcal{E}_t, \mathbf{X}_t, \mathbf{W}_t)$$
+1. ingest and normalize authorized records;
+2. represent entities and relationships consistently;
+3. retain source provenance and time information;
+4. identify possible duplicate entities without silently merging uncertain matches;
+5. provide graph, timeline, and, where appropriate, geographic exploration;
+6. surface potential relationships with reasons and uncertainty;
+7. support review, correction, and audit by authorized personnel; and
+8. handle document-screening outputs as evidence signals requiring verification, not as definitive determinations.
 
-Where $\mathcal{V}_t$ represents microservices across AWS, GCP, and Azure; $\mathcal{E}_t$ represents active gRPC/HTTP communication channels; $\mathbf{X}_t \in \mathbb{R}^{N \times 8}$ encapsulates 8-dimensional node telemetry vectors (CPU utilization, memory, inbound/outbound request rates, P99 latency, HTTP error rate, thread wait time, and queue depth); and $\mathbf{W}_t$ represents dynamic cross-cloud link latencies and packet drop rates.
+## 3. Aim and objectives
 
-```
-Telemetry Window [t - T, t] (X_t-T ... X_t)
-            │
-            ▼
-┌────────────────────────────────────────────────────────┐
-│  Spatial Message Passing: GATv2 Relational Attention   │
-│  e_ij = LeakyReLU( a^T [ W*h_i || W*h_j || W_e*e_ij ] )│
-│  alpha_ij = Softmax_j( e_ij )                          │
-│  h'_i = sigma( SUM_j alpha_ij * W * h_j )              │
-└────────────────────────────────────────────────────────┘
-            │
-            ▼
-┌────────────────────────────────────────────────────────┐
-│  Temporal Gated Recurrent Unit (GRU) Layer             │
-│  z_t = sigma( W_z * h'_t + U_z * s_t-1 + b_z )         │
-│  r_t = sigma( W_r * h'_t + U_r * s_t-1 + b_r )         │
-│  s~_t = tanh( W_s * h'_t + U_s * (r_t (*) s_t-1) + b_s)│
-│  s_t = (1 - z_t) (*) s_t-1 + z_t (*) s~_t              │
-└────────────────────────────────────────────────────────┘
-            │
-            ▼
-┌────────────────────────────────────────────────────────┐
-│  Predictive Risk Head (MLP + Sigmoid)                  │
-│  y^_i(t + Delta_t) = Sigmoid( W_out * s_i,t + b_out )  │
-│  Output: Failure Risk [0.0 - 1.0], Blast Radius Path   │
-└────────────────────────────────────────────────────────┘
-```
+### 3.1 Aim
 
-1. **Spatial Representation via Multi-Head GATv2:** Computes dynamic attention weights $\alpha_{ij}$ over dependency edges, allowing the model to dynamically detect when downstream service degradation threatens upstream callers.
-2. **Temporal Dynamic Modeling via GRU Cells:** Integrates sliding-window historical hidden states across a 60-second horizon.
-3. **Predictive Failure Horizon Output:** Outputs a failure probability vector $\hat{\mathbf{Y}}_{t+\Delta t} \in [0, 1]^N$ with lookahead window $\Delta t = 60\text{s}$, identifying cascading failure risks **30 to 120 seconds before service disruption manifests**.
+To specify an evidence-aware, explainable, temporal graph-analysis workflow that supports authorized investigators in exploring relationships across fragmented records, with identity/document screening as a supporting capability.
 
----
+### 3.2 Objectives
 
-### Core Innovation Module 2 — Deep Reinforcement Learning Orchestrator & State Persistence Layer
-Mitigation is formulated as a Constrained Markov Decision Process $(\mathcal{S}, \mathcal{A}, \mathcal{P}, \mathcal{R}, \mathcal{C}, \gamma)$:
+- Define a common data model for entities, relationships, events, source records, and evidence.
+- Describe a pipeline for ingestion, normalization, entity resolution, graph construction, and analysis.
+- Preserve provenance, timestamps, confidence/uncertainty, and review status for each derived relationship.
+- Specify a document-screening workflow that can extract fields and flag inconsistencies for human inspection.
+- Design an investigator-facing workflow for graph exploration, timeline review, evidence inspection, and audit.
+- Establish a test plan measuring accuracy, false matches, usability, traceability, and performance before making efficacy claims.
+- Define privacy, security, fairness, and human-oversight requirements.
 
-1. **State Space $\mathcal{S}$:** Current graph state $\mathcal{G}_t$, predicted failure probability vector $\hat{\mathbf{Y}}_{t+\Delta t}$, and current multi-cloud traffic route weights.
-2. **Action Space $\mathcal{A}$:** Continuously adjustable actions actuated via Envoy sidecar xDS:
-   - Dynamic cross-cloud traffic re-weighting ($w_{\text{primary}} \rightarrow w_{\text{secondary}}$)
-   - Progressive pod cordoning (soft-isolation without terminating in-flight RPCs)
-   - Adaptive upstream ingress token-bucket rate limiting (halting retry storms)
-   - Cross-cloud horizontal pod autoscaling
-3. **Multi-Objective Reward Function $\mathcal{R}(s_t, a_t)$:**
-   $$\mathcal{R}(s_t, a_t) = 10.0 \cdot (1 - \overline{\text{SLA\_Violation}}) - 2.0 \cdot \frac{\overline{\text{P99\_Latency}}}{100} - 0.5 \cdot \text{Cost}_{\text{Egress}} - 0.1 \cdot \text{Action\_Churn}$$
-4. **Distributed CRDT Mesh State Persistence Layer:**
-   Multi-cloud WAN brownouts frequently induce network partitions. AetherMesh eliminates central single-points-of-failure using a **State-based Conflict-Free Replicated Data Type (CvRDT)** layer (Observed-Removed Sets and Positive-Negative Counters) synchronized via Lamport vector clocks:
-   $$\text{State}(c_1) \sqcup \text{State}(c_2) = \text{LUB}(\text{State}(c_1), \text{State}(c_2))$$
-   During a network partition between AWS and GCP, instances in both clouds independently execute local safety policies. Upon WAN restoration, state vectors merge deterministically without requiring a central coordinator, preventing route collision and data inconsistency.
+## 4. Scope
 
----
+### In scope
 
-### Communication / Synchronization Protocol
-1. **eBPF-Powered Kernel Telemetry Tap:** Attaches eBPF bytecode programs directly to `sock_ops` and `tc` (Traffic Control) kernel hooks, transferring sub-millisecond socket RTT, packet loss, and queue metrics to a shared BPF ring buffer with **< 1.2% CPU overhead** (bypassing user-space proxy interception).
-2. **Multiplexed HTTP/2 gRPC Streaming:** Nodes batch and stream 100ms telemetry frames to the AetherMesh controller via bi-directional gRPC protocol buffers (`aethermesh_telemetry.proto`).
-3. **Sub-millisecond xDS Actuation:** DRL mitigation commands are dispatched over Envoy CDS/RDS discovery APIs in **< 15 milliseconds** without connection resets.
-4. **Encrypted Zero-Trust WireGuard Mesh:** Inter-cloud state replication traverses an automated WireGuard kernel overlay with ephemeral ChaCha20-Poly1305 symmetric keys rotated every hour.
+- Structured representation of authorized case records and entities.
+- Entity normalization and candidate duplicate detection.
+- Evidence-linked graph construction.
+- Descriptive graph analytics such as degree/centrality, bridge analysis, and community detection, if implemented and validated.
+- Temporal filtering and event timelines.
+- Document-field extraction and rule-based consistency checks as a proposed supporting module.
+- Review queues, explanations, correction workflows, and audit records.
+- Evaluation using synthetic or properly authorized and de-identified data.
 
----
+### Out of scope unless separately authorized, implemented, and validated
 
-### System Architecture Summary
-```
-+------------------------------------------------------------------------------------+
-|                         AETHERMESH SYSTEM ARCHITECTURE                             |
-+------------------------------------------------------------------------------------+
+- Direct connection to government, police, telecom, financial, biometric, or other restricted databases.
+- Unrestricted surveillance or collection of personal data.
+- Definitive determination that a person committed an offence.
+- Automatic arrest, detention, watchlisting, or other adverse action.
+- Claims of operational accuracy, real-time performance, or production readiness without evidence.
+- Facial recognition, CCTV analytics, ANPR, or biometric matching as completed capabilities unless separately demonstrated and lawfully approved.
 
-   MULTI-CLOUD TOPOLOGY (AWS / GCP / AZURE / EDGE)
-   [ Service A (AWS) ] <---eBPF---> [ Service B (GCP) ] <---eBPF---> [ Service C (Azure) ]
-            │                                │                                │
-            ▼                                ▼                                ▼
-   +------------------------------------------------------------------------------------+
-   |               COMMUNICATION & TELEMETRY INGESTION LAYER (eBPF + gRPC)              |
-   |   - Low-overhead Kernel eBPF Telemetry Taps (TCP/HTTP/gRPC Latency, Drops, RTT)    |
-   |   - Sub-second Streaming Telemetry Aggregator & Dynamic Adjacency Constructor       |
-   +------------------------------------------------------------------------------------+
-                                            │
-                                            ▼
-   +------------------------------------------------------------------------------------+
-   |            CORE INNOVATION MODULE 1: SPATIO-TEMPORAL GNN PREDICTOR                 |
-   |   - Dynamic Adjacency Normalization: A_hat = D^(-1/2) * (A + I) * D^(-1/2)         |
-   |   - Spatial GATv2 Attention: Multi-head relational attention over dependencies     |
-   |   - Temporal GRU Sequence Memory: 60-step sliding window telemetry state           |
-   |   - Cascade Risk Output: Node Failure Risk P(v_i) & Edge Choke Probability         |
-   +------------------------------------------------------------------------------------+
-                                            │
-                                            ▼ [Risk Threshold / Early-Warning Trigger]
-   +------------------------------------------------------------------------------------+
-   |          CORE INNOVATION MODULE 2: DRL ORCHESTRATOR & PERSISTENCE LAYER            |
-   |   - Constrained PPO Policy: Continuous Traffic Weighting & Action Discretization   |
-   |   - Multi-Objective Reward: SLA Maximization - Egress Cost - Churn Penalty         |
-   |   - CRDT Mesh State Registry: Delta-state PN-Counters & OR-Sets across clouds      |
-   |   - Consensus & Synchronization: Raft-backed leader leases & xDS config push       |
-   +------------------------------------------------------------------------------------+
-                                            │
-                                            ▼ [Automated Mitigation Dispatch]
-   +------------------------------------------------------------------------------------+
-   |             ENVOY xDS PROTOCOL / DYNAMIC CONTROL PLANE ACTUATION                    |
-   |   - Speculative Traffic Re-weighting (AWS -> GCP/Azure in <15ms)                   |
-   |   - Progressive Pod Isolation & Cordoning (Preventing blast-radius spread)         |
-   |   - Upstream Concurrency Throttling & Adaptive Rate Limiting                        |
-   +------------------------------------------------------------------------------------+
-```
+## 5. Proposed system architecture
 
----
+The architecture is a proposal, not a statement that every module currently exists.
 
-## 4. Proven Performance Metrics
+1. **Authorized data intake:** Receive approved records and document files; validate format, authorization, and required metadata.
+2. **Parsing and normalization:** Standardize dates, names, identifiers, locations, and record formats while preserving original values.
+3. **Entity extraction:** Extract candidate people, organizations, locations, vehicles, events, and document fields from structured or unstructured sources using methods selected and validated for the actual data.
+4. **Entity resolution:** Compare candidate records using deterministic rules and/or probabilistic similarity. Preserve alternatives and uncertainty; require human review for ambiguous merges.
+5. **Evidence and provenance layer:** Record the source, timestamp, transformation, reviewer, and rationale for each fact or inferred link.
+6. **Graph construction:** Represent entities as nodes and documented relationships/events as edges with time and provenance attributes.
+7. **Analysis layer:** Provide descriptive graph measures and temporal queries. Any predictive link suggestion must be clearly labeled as a hypothesis and accompanied by a reason and evidence trail.
+8. **Document screening (supporting module):** Extract text/fields; perform format and consistency checks; optionally run validated forensic checks. Return review flags rather than a definitive “fake” verdict.
+9. **Investigator interface:** Allow authorized users to inspect nodes, edges, source records, timelines, filters, and review status.
+10. **Security and audit:** Apply least-privilege access, secure transport/storage, logging, retention controls, and incident response appropriate to the deployment.
 
-The efficacy of AetherMesh was evaluated across a high-concurrency multi-cloud deployment (240 microservice instances distributed across AWS `us-east-1`, GCP `us-central1`, and Azure `eastus2`):
+## 6. Data model
 
-### 4.1 Speed & Latency Reduction
+The following is a conceptual model. The final implementation should document its actual schema.
 
-| Performance Metric | Industry Reactive Baseline (HPA + Prometheus) | Modern Service Mesh (Istio / Envoy Outlier) | AetherMesh (GNN + DRL Engine) | Net Improvement |
-| :--- | :--- | :--- | :--- | :--- |
-| **Mean Time to Detect (MTTD)** | 254.0 seconds (4.2 min) | 48.0 seconds | **1.8 seconds** | **99.3% Reduction** |
-| **Mean Time to Remediate (MTTR)**| 412.0 seconds (6.8 min) | 126.0 seconds | **11.4 seconds** | **97.2% Reduction** |
-| **Pre-failure Anomaly Lead Time**| 0.0 sec (Reactive only) | 0.0 sec (Reactive only) | **46.8s advance warning** | **Predictive Horizon** |
-| **P90 Request Latency (Normal Load)** | 42.1 ms | 38.6 ms | **24.2 ms** | **42.5% Faster** |
-| **P99 Tail Latency (Cascading Shock)**| 2,840.0 ms | 1,420.0 ms | **128.5 ms** | **95.5% Latency Cut** |
-| **xDS Route Convergence Time** | 1,200 ms | 480 ms | **14.2 ms** | **97.0% Faster** |
+| Record type | Suggested fields |
+|---|---|
+| Entity | Internal ID, entity type, normalized attributes, aliases, status |
+| Source record | Source ID, source type, collection/record time, authorization basis, integrity metadata |
+| Relationship | Source entity, relationship type, target entity, validity interval, supporting source IDs |
+| Event | Event ID, event type, time or time range, location reference, associated entities |
+| Document review | Document reference, extracted fields, validation checks, flags, reviewer status |
+| Inference | Inference ID, method/version, candidate link, score if calibrated, explanation, uncertainty |
+| Audit event | Actor, action, timestamp, object reference, reason, outcome |
 
----
+A similarity score must not be called a probability unless it has been calibrated and evaluated as one. Missing information must remain missing; it must not be fabricated to complete a record.
 
-### 4.2 Resource Efficiency & Cloud Optimization
+## 7. Methodology
 
-| Efficiency Metric | Uncoordinated Multi-Cloud | Static Cloud Mesh | AetherMesh Autonomous Mesh | Net Improvement |
-| :--- | :--- | :--- | :--- | :--- |
-| **Cross-Cloud Egress / 10M Req** | 412.0 GB | 340.0 GB | **198.4 GB** | **51.8% Egress Reduction** |
-| **Monthly Egress Cost** | \$8,450.00 | \$6,980.00 | **\$3,920.00** | **\$4,530 / mo Saved (53.6%)** |
-| **Host Telemetry CPU Footprint** | 11.2% (Prometheus) | 8.4% (Envoy logs) | **1.1% (eBPF Kernel Ring)** | **86.9% Lower Footprint** |
-| **Host Telemetry Memory Footprint** | 240 MB / host | 185 MB / host | **21.5 MB / host** | **88.4% Memory Savings** |
-| **Compute Over-provisioning Buffer** | +45% static capacity | +30% static capacity | **+8% dynamic elasticity** | **82.2% Buffer Reduction** |
+### Stage 1 — Data governance and intake
+Use only synthetic, public, de-identified, or otherwise lawfully authorized data. Record source and purpose. Reject or quarantine files that fail intake checks.
 
----
+### Stage 2 — Normalization and extraction
+Normalize formats without destroying original source values. Extraction tools should be selected after examining the real document types and languages. Store extracted values separately from source images/text and retain extraction confidence where available.
 
-### 4.3 Reliability, Uptime & Fault Tolerance
+### Stage 3 — Entity resolution
+Generate candidate matches using documented features such as normalized names, identifiers, dates, or other legally approved attributes. Evaluate false merges and missed matches. Ambiguous matches should remain separate until reviewed.
 
-| Reliability Metric | Baseline Reactive System | Istio Circuit Breakers | AetherMesh Autonomous Core |
-| :--- | :--- | :--- | :--- |
-| **Availability SLA (30-day simulated)** | 99.82% (8.6 hrs downtime) | 99.91% (3.9 hrs downtime) | **99.999% (< 2.6 mins equivalent)** |
-| **Cascading Blast Radius Propagation** | 100% (Full cluster cascade) | 58% (Partial tier crash) | **0% (Isolated to 1 node)** |
-| **False-Positive Mitigation Rate** | 6.8% | 4.2% | **< 0.14% (High Precision)** |
-| **Zero-Downtime WAN Partition Survival**| 0% (Split-brain failure) | 20% (Stale routes) | **100% (CRDT Deterministic Merge)** |
+### Stage 4 — Evidence-linked graph
+Create graph nodes and edges only from traceable source facts or clearly labeled inferences. Each edge should identify its source and temporal context. Do not convert mere co-occurrence into proof of a meaningful relationship.
 
----
+### Stage 5 — Graph and temporal analysis
+Allow investigators to filter by time, source, relationship type, and review status. Graph measures describe structure; they do not establish guilt or intent. Any ranking should explain which measurable factors contributed to it.
 
-## 5. Patent & Novelty Claims (Summary of Claims)
+### Stage 6 — Document screening
+Where supported by the implementation, extract fields and run deterministic checks for format or internal consistency. Forensic anomaly detectors require validation against representative legitimate and manipulated documents. A flag indicates a need for review, not proof of fraud.
 
-1. **Claim 1 (The System):** An autonomous multi-cloud service mesh architecture comprising an eBPF telemetry extraction pipeline, a spatio-temporal graph neural network cascade inference engine, and a deep reinforcement learning policy orchestrator communicably coupled to cloud proxy sidecars.
-2. **Claim 2 (The GNN Prediction Method):** A computer-implemented method for predicting microservice cascade failures comprising: continuously sampling node metrics and dynamic communication topologies into a sliding-window attributed graph, applying relational multi-head graph attention across dynamic dependency edges, and passing spatial embeddings into recurrent temporal gating cells to output multi-horizon failure probabilities prior to error threshold transgression.
-3. **Claim 3 (The Self-Healing DRL Orchestration):** A self-healing method comprising: mapping graph anomaly embeddings to a multi-objective reward policy, continuously adjusting multi-cloud route weights via dynamic xDS instructions, selectively isolating degraded container instances without terminating in-flight requests, and penalizing high-frequency route flap actions to preserve global stability.
-4. **Claim 4 (State Synchronization Across Heterogeneous Clouds):** A distributed state architecture utilizing conflict-free replicated data types (CRDTs) to preserve mesh topology and routing rules across decoupled cloud boundaries, ensuring deterministic convergence without split-brain anomalies under WAN link failures.
+### Stage 7 — Human review and feedback
+Present evidence, source references, uncertainty, and alternative explanations. Permit authorized reviewers to accept, reject, or correct proposed links with reasons. Keep the original machine output and subsequent review history for audit.
 
----
-*End of Official Proceedings Document — 3SVK National Cloud & AI Innovation Challenge Season 3*
+## 8. Security, privacy, and responsible use
+
+- Authentication and role-based access should be implemented and tested before sensitive data is used.
+- Apply least privilege and separate duties for data administration, investigation, and audit.
+- Protect data in transit and at rest using deployment-appropriate controls and managed secrets.
+- Log access, exports, edits, and review decisions without unnecessarily duplicating sensitive content in logs.
+- Define retention, deletion, backup, incident-response, and access-revocation procedures.
+- Use data minimization, purpose limitation, and documented authorization.
+- Evaluate performance differences across relevant data groups where lawful and appropriate.
+- Provide source-level explanations and correction mechanisms.
+- Prevent a model score or graph position from being used as the sole basis for adverse action.
+- Test access controls, injection/file-upload risks, audit integrity, and data leakage before deployment.
+
+These are design requirements; they should not be described as implemented controls until verified in the actual system.
+
+## 9. Evaluation plan
+
+No results are asserted in this draft. Evaluation should be conducted before making performance claims.
+
+| Area | Suggested measurement | Evidence needed |
+|---|---|---|
+| Entity extraction | Precision, recall, F1 by entity type | Labeled evaluation set |
+| Entity resolution | Pairwise precision/recall, false-merge rate | Ground-truth entity pairs |
+| Relationship analysis | Precision@k or reviewer-rated usefulness | Labeled candidate links and review protocol |
+| Document screening | Sensitivity, specificity, false-positive rate by document type | Representative legitimate and manipulated samples |
+| Traceability | Percentage of displayed facts/links with retrievable provenance | Automated audit tests |
+| Performance | Latency and throughput under stated workload | Repeatable benchmark environment |
+| Security | Test results for access controls and threat scenarios | Test plan, logs, remediation records |
+| Usability | Task completion and structured user feedback | Documented user study and consent |
+
+For every reported metric, document dataset size and origin, labeling process, train/test separation where relevant, software/model versions, hardware, parameters, uncertainty intervals where appropriate, and limitations. Do not use synthetic test results as evidence of real-world law-enforcement accuracy.
+
+## 10. Expected contribution
+
+The proposed contribution is the design of a unified workflow that connects evidence provenance, uncertain entity resolution, temporal graph exploration, and document-review signals. The design emphasizes inspectability and human review rather than opaque automated conclusions.
+
+Whether this combination provides measurable benefit remains an empirical question. A future evaluation should compare it with a documented baseline and report both improvements and failure modes.
+
+## 11. Limitations
+
+- Source data may be incomplete, biased, contradictory, or outdated.
+- Entity resolution can incorrectly merge different people or split records about the same person.
+- Graph measures may overemphasize highly connected entities for reasons unrelated to wrongdoing.
+- Document quality, language, compression, lighting, and manipulation techniques can affect screening performance.
+- A plausible graph path is not necessarily a causal or criminal relationship.
+- Access to restricted datasets and integrations depends on legal authority, agreements, security review, and technical availability.
+- No implementation status, measured results, or operational deployment is established by this design document.
+
+## 12. Conclusion
+
+This proceedings draft specifies a proposed AI-assisted criminal network analysis system with supporting identity/document screening. Its central design principle is that every analytical lead should be traceable to evidence, temporally contextualized, and reviewable by an authorized human. The project should progress through implementation verification, controlled evaluation, security testing, and governance review before any operational claims are made.
+
+## References
+
+1. 3SVK Official, *Official Participant Submission Guide: GitHub Workflow & Pull Request Instructions*, participant-provided guide, 2026. Repository: https://github.com/3SVK-Official/3SVK-Research-Series-Season-3
+2. Smart India Hackathon problem-statement listings for PS 189 and PS 188 should be checked against the official SIH materials available to the participant before submission. A community-maintained problem explorer was consulted for terminology, not treated as the final authority: https://sih26ps.vercel.app/
+3. Add verified scholarly references on knowledge graphs, entity resolution, graph analytics, document forensics, and explainable decision support after selecting the methods actually used. Do not cite papers that have not been read and verified.
+
+## Submission declaration
+
+Before submitting, the author(s) should verify all project details, identify which components are implemented versus proposed, add genuine author/mentor details with consent, and remove every unresolved placeholder. This document is a research design draft, not proof of a working deployment or validated performance.
