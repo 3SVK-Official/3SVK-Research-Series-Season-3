@@ -1,0 +1,20 @@
+{
+  "experiment": "FieldRelay local synthetic ingestion and replay",
+  "environment": {
+    "python": "3.13.5",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41"
+  },
+  "transport": "FastAPI TestClient in-process; no external network",
+  "records_generated": 1000,
+  "batch_size": 50,
+  "batches_per_pass": 20,
+  "initially_accepted": 1000,
+  "replay_duplicates": 1000,
+  "unique_cloud_records_after_replay": 1000,
+  "sites": 8,
+  "elapsed_seconds_for_both_passes": 0.1195,
+  "combined_record_operations_per_second": 16738.05,
+  "integrity_check": "passed; each submitted event hash validated by the service",
+  "idempotency_check": "passed; replayed event IDs did not increase stored record count",
+  "scope_note": "This is a local functional benchmark, not a cloud-hosted load test. Results depend on the machine and runtime."
+}
