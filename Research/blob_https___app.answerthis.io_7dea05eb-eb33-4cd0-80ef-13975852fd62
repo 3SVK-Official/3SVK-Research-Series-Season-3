@@ -1,0 +1,75 @@
+{
+  "metadata": {
+    "status": "reported_results_not_independently_reproduced",
+    "values_were_supplied_in_project_summary": true,
+    "independently_reproduced_during_document_preparation": false,
+    "reported_source": "results/final_results.json",
+    "reported_validation_date": "2026-09-09",
+    "latency_methodological_caveat": "Centralized latency is described as including uplink, downlink, and inference time; edge latency is described as local inference. These measurement boundaries differ, so the latency comparisons are not directly comparable as end-to-end measurements.",
+    "derived_calculation_basis": "Derived calculations are arithmetic based on the supplied values; they are not independently measured experimental results.",
+    "source_code_or_experiment_execution_inspected": false
+  },
+  "detection_metrics": {
+    "centralized_cloud": {
+      "accuracy": 0.2142,
+      "precision": 0.0797,
+      "recall": 1.0,
+      "f1_score": 0.1476,
+      "roc_auc": 0.619,
+      "pr_auc": 0.0814
+    },
+    "static_edge": {
+      "accuracy": 0.8683,
+      "precision": 0.1562,
+      "recall": 0.2128,
+      "f1_score": 0.1802,
+      "roc_auc": 0.6128,
+      "pr_auc": 0.1123
+    },
+    "adaptive_edge": {
+      "accuracy": 0.8683,
+      "precision": 0.1562,
+      "recall": 0.2128,
+      "f1_score": 0.1802,
+      "roc_auc": 0.6128,
+      "pr_auc": 0.1123
+    }
+  },
+  "system_metrics": {
+    "latency_ms": {
+      "centralized_cloud": 101.13,
+      "static_edge": 0.39,
+      "adaptive_edge": 0.5
+    },
+    "cpu_utilization_percent": {
+      "centralized_cloud": 59.66,
+      "static_edge": 37.9,
+      "adaptive_edge": 47.61
+    },
+    "memory_utilization_percent": {
+      "centralized_cloud": 77.88,
+      "static_edge": 77.3,
+      "adaptive_edge": 79.9
+    },
+    "data_transmitted_bytes": {
+      "centralized_cloud": 331680,
+      "static_edge": 30720,
+      "adaptive_edge": 30720
+    }
+  },
+  "derived_calculations": {
+    "static_edge_latency_reduction_vs_centralized_percent": 99.61435775734203,
+    "adaptive_edge_latency_reduction_vs_centralized_percent": 99.50558686838721,
+    "static_edge_data_transmission_reduction_vs_centralized_percent": 90.73806078147612,
+    "adaptive_edge_data_transmission_reduction_vs_centralized_percent": 90.73806078147612,
+    "adaptive_edge_latency_increase_vs_static_edge_percent": 28.205128205128194,
+    "adaptive_edge_latency_difference_vs_static_edge_ms": 0.11,
+    "static_edge_and_adaptive_edge_detection_metrics_identical": true,
+    "formulas": {
+      "latency_reduction_percent": "(1 - edge_latency_ms / centralized_latency_ms) * 100",
+      "data_transmission_reduction_percent": "(1 - edge_bytes / centralized_bytes) * 100",
+      "adaptive_latency_increase_vs_static_percent": "(adaptive_latency_ms / static_latency_ms - 1) * 100",
+      "adaptive_latency_difference_vs_static_ms": "adaptive_latency_ms - static_latency_ms"
+    }
+  }
+}
