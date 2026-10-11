@@ -1,270 +1,102 @@
-3SVK-Research-Series-Season-3
-Official research archive, documentation, and proceedings for the National Research & Innovation Challenge Season 3 by 3SVK.
+# InfraWeft
 
-🔒 Intellectual Property, Copyright & Legal Notice
-© 2026 3SVK Official. All rights reserved.
+**Explainable, offline risk review for cloud infrastructure changes**  
+Prepared by **Snehasish Das** for the **National Research & Innovation Challenge Season 3 by 3SVK — Cloud Engineering track**.
 
-The research tracks, problem statements, documentation, frameworks, and structural designs published in this repository are the exclusive intellectual property of 3SVK, protected under the Indian Copyright Act, 1957, and international copyright treaties.
+> InfraWeft helps a reviewer see not only which infrastructure rule matched, but the exact planned evidence, a concrete remediation, and the downstream resources that may be affected.
 
-Permitted Use: Registered participants may use the provided templates and resources strictly for the purpose of competing in the National Research & Innovation Challenge Season 3. Legal Prohibition: In accordance with the Copyright Act of India, any unauthorized reproduction, redistribution, adaptation, commercial exploitation, or plagiarism of these works without explicit written consent from 3SVK constitutes an infringement under Section 51 and is punishable under Section 63 and other applicable provisions of Indian law.
+## Why this prototype
 
-📚 Official Citation
-If you use, reference, or build upon this research series, please cite it via our permanent Zenodo DOI:
+Terraform plan output describes intended infrastructure changes, but a reviewer still has to connect security-sensitive values, destructive actions, and dependencies. InfraWeft is a small, credential-free review layer for a machine-readable Terraform plan. Its initial contribution is deliberately narrow: deterministic rules plus an explainable, dependency-weighted triage score.
 
-3SVK Official. (2026). 3SVK Research Series Season 3: Official Archive & Proceedings. Zenodo. https://doi.org/10.5281/zenodo.22008262
+This is an early prototype, not a production security product. It is not a substitute for provider-native policy, code review, backups, or a full IaC scanner.
 
-Adaptive Edge-AI Framework for Real-Time Anomaly Detection
-A resource-aware adaptive framework for real-time anomaly detection at the edge, dynamically balancing detection accuracy with computational constraints.
+## What it currently checks
 
-Research Objective
-This project investigates whether an adaptive, resource-aware edge-AI framework can detect anomalies in real time while reducing inference latency, network/data-transfer overhead, and computational resource consumption compared with a conventional centralized detection architecture without materially degrading detection performance.
+| Rule | Signal | Initial severity |
+|---|---|---|
+| `CS-101` | Public SSH/RDP or all-port ingress in an AWS security group | High |
+| `CS-201` | Wildcard IAM action and/or resource scope in an AWS IAM policy | High/Critical |
+| `CS-301` | Delete/replace of a production-tagged or persistent data resource | Critical |
+| `CS-401` | Explicitly disabled at-rest encryption on supported AWS database/EFS resources | High |
+| `CS-501` | One or more S3 Block Public Access settings explicitly disabled | High |
+| `CS-502` | Public-read or public-read-write ACL on a supported S3 bucket resource | High/Critical |
 
-Problem Addressed
-Traditional centralized anomaly detection systems incur high latency and network overhead, while static edge-based approaches lack flexibility to adapt to varying resource conditions. Existing edge-based systems typically employ fixed model complexity, leading to either over-provisioning (complex models exceeding available resources) or under-provisioning (simple models failing to detect subtle anomalies).
+Rules examine planned `after` values (and `before` values where the risk is a deletion). Unrecognized resource types and unknown values are not inferred to be safe. Rule coverage is incomplete and provider-specific.
 
-Implemented Approach
-The framework implements a utility-based adaptive controller that:
+## Risk ranking
 
-Dynamically selects between three detection models of varying complexity based on real-time CPU, memory, and network conditions
-Optimizes transmission decisions to balance local processing with cloud offloading when beneficial
-Employs a mathematically defined utility function that explicitly considers CPU, memory, latency, detection confidence, transmission costs, and model complexity
-Uses validation-based threshold calibration to prevent test-set leakage
-Adaptive Controller
-The adaptive controller maintains a state vector:
+For each finding:
 
-s = (cpu_util, mem_util, net_latency, bandwidth, data_difficulty, anomaly_confidence)
-At each decision point, the controller selects a model mode m ∈ {LIGHT, STANDARD, HEAVY} and transmission decision t ∈ {LOCAL_ONLY, TRANSMIT} by maximizing:
+`priority_points = severity_weight + min(15, 3 × downstream_dependent_count)`
 
-U(m, t) = w_cpu * (1 - cpu_cost(m)) + 
-          w_mem * (1 - mem_cost(m)) + 
-          w_lat * (1 - latency_cost(m, t)) + 
-          w_conf * confidence(m) - 
-          w_trans * trans_cost(t) - 
-          w_comp * complexity_cost(m)
-Subject to feasibility constraints:
+Severity weights: Critical 40, High 25, Medium 12, Low 5. The overall score is the sum of finding points, capped at 100. Score bands are Low (0–19), Moderate (20–39), High (40–69), and Critical (70–100).
 
-cpu_util + cpu_overhead(m) ≤ cpu_threshold
-mem_util + mem_overhead(m) ≤ mem_threshold
-if t = TRANSMIT: net_latency ≤ latency_max
-Dataset
-The framework uses synthetic time-series data with:
+This is an **explicit heuristic**, not an empirically calibrated probability of breach, downtime, or loss. The dependency graph comes from Terraform configuration dependency declarations; omitted or indirect edges can make blast-radius counts incomplete. The score should guide reviewer attention, never approve or apply a plan by itself.
 
-5,000 samples
-5% anomaly rate
-Train/Val/Test split: 70/15/15
-Window size: 60 samples
-Normal samples: sinusoidal pattern with Gaussian noise
-Anomaly patterns: spikes, dips, sustained shifts, amplitude changes
-Detection Models
-Three models of increasing complexity are implemented:
+## Run locally
 
-LIGHT: Statistical Z-score based anomaly detector (fast, low memory)
-STANDARD: Autoencoder with reconstruction error (balanced)
-HEAVY: LSTM Autoencoder for temporal patterns (high accuracy, high computational cost)
-Leakage Prevention
-To prevent test-set leakage, all three systems (Centralized, Static Edge, Adaptive Edge) use validation-based threshold calibration with F1 optimization on the validation set before evaluating on the test set.
+Requires Python 3.10+; the prototype uses only the standard library.
 
-Validation-Based Threshold Calibration
-The ThresholdCalibrator class implements multiple calibration methods:
+```bash
+# Optional virtual environment
+python -m venv .venv
+# macOS/Linux
+source .venv/bin/activate
+# Windows PowerShell
+# .venv\Scripts\Activate.ps1
 
-f1_optimize: Maximize F1 score on validation data (used in experiments)
-percentile: Use fixed percentile (e.g., 95th)
-precision_constrained: Maximize recall subject to precision constraint
-recall_constrained: Maximize precision subject to recall constraint
-This ensures fair comparison between systems and prevents overfitting to the test set.
+python -m pip install -e .
 
-Project Structure
-3svk/
-├── configs/                 # Configuration files
-│   └── default_config.yaml
-├── diagrams/                # Architecture diagrams
-│   └── architecture.md
-├── experiments/             # Experiment scripts
-│   ├── baseline_centralized/
-│   ├── baseline_static_edge/
-│   ├── proposed/
-│   ├── ablation/
-│   ├── verify_results.py
-│   └── generate_figures.py
-├── figures/                 # Generated figures and tables
-├── references/              # Literature review and research gap
-│   ├── literature_review.md
-│   └── research_gap.md
-├── results/                 # Experiment results (JSON)
-├── src/                     # Source code
-│   ├── adaptive/           # Adaptive controller
-│   ├── cloud/              # Cloud coordinator
-│   ├── data/               # Data loading and streaming
-│   ├── edge/               # Edge processor
-│   ├── evaluation/         # Metrics and monitoring
-│   ├── models/             # Detection models
-│   └── preprocessing/      # Data preprocessing
-├── tests/                  # Unit tests
-├── requirements.txt         # Python dependencies
-├── research-paper.md       # Complete research paper
-└── README.md              # This file
-Installation
-Prerequisites
-Python 3.14.6
-pip
-Setup
-Clone the repository:
-git clone <repository-url>
-cd 3svk
-Install dependencies:
-python -m pip install -r requirements.txt
-Usage
-Running Experiments
-Run All Experiments
-python experiments/verify_results.py
-This will:
+# Review the included synthetic risky plan
+infraweft --plan examples/risky_plan.json --format markdown
 
-Run baseline centralized experiment
-Run baseline static edge experiment
-Run proposed adaptive edge experiment
-Save results to results/ directory
-Run Individual Experiments
-# Baseline A: Centralized Detection
-python experiments/baseline_centralized/run.py
+# Save machine-readable output
+infraweft --plan examples/risky_plan.json --format json --output report.json
 
-# Baseline B: Static Edge Detection
-python experiments/baseline_static_edge/run.py
+# Run the test suite without installing the package
+PYTHONPATH=src python -m unittest discover -s tests -v
+```
 
-# Proposed: Adaptive Edge Framework
-python experiments/proposed/run.py
+To analyze a real Terraform plan locally:
 
-# Ablation Study
-python experiments/ablation/run.py
-Generate Figures and Tables
-python experiments/generate_figures.py
-This will generate:
+```bash
+terraform plan -out=tfplan
+terraform show -json tfplan > tfplan.json
+infraweft --plan tfplan.json --format markdown --output infraweft-report.md
+```
 
-Benchmark comparison table
-Performance comparison plots
-Summary report
-Running Tests
-# Run all tests
-python -m pytest tests/ -v
+**Data handling:** Terraform plan JSON can contain sensitive infrastructure details. Keep real plan files and generated reports out of public repositories, CI logs, and screenshots unless they have been reviewed and sanitized. The included fixtures are synthetic and contain no cloud credentials.
 
-# Run specific test file
-python -m pytest tests/test_data.py -v
-python -m pytest tests/test_preprocessing.py -v
-python -m pytest tests/test_adaptive.py -v
-Configuration
-Edit configs/default_config.yaml to customize:
+## Example run
 
-Data: Dataset parameters, window size, anomaly ratio
-Preprocessing: Normalization method, feature engineering
-Models: Model architectures and hyperparameters
-Controller: Utility function weights and thresholds
-Evaluation: Metrics to compute
-Experiments: Random seed, sample sizes
-Architecture
-Components
-Data Ingestion (src/data/)
+The bundled `examples/risky_plan.json` intentionally contains four risky patterns. The current prototype reports **4 findings** and a capped **Critical 100/100 heuristic score** for that synthetic fixture. This demonstrates rule execution; it is not a real-cloud benchmark or a claim of detection accuracy.
 
-DataLoader: Loads and splits datasets
-DataStream: Simulates streaming data with buffering
-Preprocessing (src/preprocessing/)
+See [`docs/demo-risk-report.md`](docs/demo-risk-report.md) for the evidence-linked output and [`docs/research_note.md`](docs/research_note.md) for methodology, scope, and limitations.
 
-Preprocessor: Normalization and window creation
-FeatureEngineer: Rolling statistics and difference features
-Detection Models (src/models/)
+## Reproducibility status
 
-IsolationForestModel: Lightweight statistical detector
-AutoencoderModel: Standard autoencoder
-LSTMAutoencoderModel: Heavy LSTM autoencoder
-Adaptive Controller (src/adaptive/)
+- Python standard library only.
+- 12 unit tests currently pass in the local test run.
+- Tests cover rule detection, dependency context, a benign public HTTPS case, malformed input, and deterministic output.
+- Fixtures are intentionally small and synthetic; they do not estimate real-world false-positive/false-negative rates.
+- No cloud account, live API, production plan, or third-party scanner was used in validation.
 
-AdaptiveController: Resource-aware decision making with utility function
-Processing (src/edge/, src/cloud/)
+## Scope and next experiments
 
-EdgeProcessor: Local processing with adaptive model selection
-CloudCoordinator: Centralized processing simulation
-Evaluation (src/evaluation/)
+Before using this as a deployment gate, extend provider/resource coverage; test against sanitized real plans; compare against at least one established scanner; run blind-labeled cases with multiple reviewers; measure false positives, false negatives, analyst agreement, runtime and score-ranking usefulness; and review policy behavior with infrastructure owners. See [`docs/evaluation_plan.md`](docs/evaluation_plan.md).
 
-MetricsCalculator: Detection and system metrics
-SystemMonitor: CPU, memory, and network monitoring
-Three Implemented Systems
-1. Centralized Detection (Baseline A)
-All data transmitted to cloud for processing
-Uses HEAVY model (LSTM Autoencoder) in cloud
-No local processing
-No adaptation
-2. Static Edge Detection (Baseline B)
-All data processed locally
-Fixed STANDARD model (Autoencoder)
-No adaptation
-Transmits only anomaly events (30,720 bytes)
-3. Adaptive Edge Framework (Proposed)
-Dynamic local/transmission decision
-Adaptive model selection (LIGHT/STANDARD/HEAVY)
-Resource-aware processing with utility function
-Transmits only anomaly events (30,720 bytes)
-Under current resource constraints, controller primarily selects STANDARD mode
-Experimental Methodology
-Detection Metrics
-Accuracy, Precision, Recall, F1-Score
-ROC-AUC, PR-AUC
-False Positive Rate, False Negative Rate
-Latency Measurement
-Centralized: Includes network transmission (uplink + downlink + inference)
-Edge systems: Measure local inference only
-Reported metrics: mean, std, min, max, p50, p95, p99
-CPU Measurement
-Mean CPU utilization percentage
-Standard deviation
-Min/max values
-Memory Measurement
-Mean memory utilization percentage
-Standard deviation
-Min/max values
-Communication Measurement
-Total data transmitted in bytes
-Edge systems transmit only anomaly events
-Centralized transmits all data
-Current Verified Results
-Results from results/final_results.json (validated on 2026-09-09):
+## Official challenge workflow
 
-Detection Performance
-Method	Accuracy	Precision	Recall	F1-Score	ROC-AUC	PR-AUC
-Centralized	0.2142	0.0797	1.0000	0.1476	0.6190	0.0814
-Static Edge	0.8683	0.1562	0.2128	0.1802	0.6128	0.1123
-Adaptive Edge (Ours)	0.8683	0.1562	0.2128	0.1802	0.6128	0.1123
-Note: All methods use validation-based threshold calibration (F1 optimization) to prevent test-set leakage. Edge methods achieve better F1 due to improved precision. The adaptive controller makes resource-aware decisions but primarily selects the STANDARD model under current resource constraints.
+The challenge listing calls for a research implementation, a GitHub pull request through the prescribed workflow, and submission of the participant's GitHub profile link plus screenshot proof. This folder does **not** create a PR or submit forms for you. Follow the [official Season 3 site](https://sites.google.com/view/3svk-research-s3/home) and its linked [Submission Guide & GitHub Steps](https://drive.google.com/file/d/1MBppotjMBeJ8N1uUFkRhxwzx7kID29gl/view?usp=sharing). Use the included [`docs/pull-request-template.md`](docs/pull-request-template.md) as a draft, then replace placeholders with the real PR URL and proof from your account.
 
-System Performance
-Method	Latency (ms)	CPU (%)	Memory (%)	Data (bytes)
-Centralized	101.13	59.66	77.88	331,680
-Static Edge	0.39	37.90	77.30	30,720
-Adaptive Edge (Ours)	0.50	47.61	79.90	30,720
-Note: Centralized latency includes network transmission (uplink + downlink + inference). Edge systems measure local inference only. Edge systems transmit only anomaly events (30,720 bytes), while centralized transmits all data (331,680 bytes).
+## References
 
-Key Improvements
-Latency: 99.61% reduction vs Centralized (Static Edge), 99.51% reduction vs Centralized (Adaptive Edge)
-Note: Latency reduction is due to network elimination (architectural advantage), not algorithmic improvement
-Data Transmission: 90.74% reduction vs Centralized (both Edge methods)
-Note: Data reduction due to local processing (architectural advantage)
-Detection Performance: Edge methods achieve 22.0% higher F1 vs Centralized (0.1802 vs 0.1476)
-Documentation
-Research Paper: research-paper.md - Complete research paper with methodology, results, and discussion
-Architecture: diagrams/architecture.md - Detailed system architecture
-Literature Review: references/literature_review.md - Related work and background
-Research Gap: references/research_gap.md - Problem statement and contribution
-Reproducibility
-All experiments use fixed random seeds (configured in default_config.yaml) to ensure reproducibility. Results are saved as JSON files in the results/ directory.
+1. HashiCorp, *JSON Output Format Overview*. https://developer.hashicorp.com/terraform/internals/json-format
+2. Amazon Web Services, *Configuring block public access settings for your S3 buckets*. https://docs.aws.amazon.com/AmazonS3/latest/userguide/configuring-block-public-access-bucket.html
+3. Amazon Web Services, *Granting public access to your Amazon S3 data*. https://docs.aws.amazon.com/AmazonS3/latest/userguide/granting-public-access.html
+4. GitHub Docs, *Creating a pull request from a fork*. https://docs.github.com/en/pull-requests/how-tos/create-pull-requests/creating-a-pull-request-from-a-fork
 
-Python 3.14.6 Compatibility
-This project is tested and verified to work with Python 3.14.6. All dependencies are compatible with Python 3.14.6.
+## License
 
-Limitations
-Synthetic Data: Evaluation on synthetic data may not reflect real-world performance
-Controller Tuning: Utility function weights require domain-specific calibration for optimal model switching
-Single Run: Results from single run; multiple runs with statistical reporting recommended for production
-Detection Performance: All methods have low F1 scores (<0.2), indicating challenging detection task or need for model improvement
-Adaptive Behavior: Under current resource constraints, the adaptive controller primarily selects the STANDARD mode, resulting in behavior similar to static edge processing
-License
-This project is submitted for the 3SVK Challenge.
-
-Contact
-For questions or issues, please refer to the research paper or contact the authors.
+MIT. See [`LICENSE`](LICENSE).
