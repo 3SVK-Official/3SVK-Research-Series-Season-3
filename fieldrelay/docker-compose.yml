@@ -1,0 +1,29 @@
+services:
+  cloud:
+    build: .
+    command: uvicorn fieldrelay.cloud:app --host 0.0.0.0 --port 8000
+    environment:
+      FIELDRELAY_SHARED_SECRET: ${FIELDRELAY_SHARED_SECRET:?Set FIELDRELAY_SHARED_SECRET in .env}
+      FIELDRELAY_CLOUD_DB: /data/cloud.db
+    ports:
+      - "8000:8000"
+    volumes:
+      - cloud_data:/data
+    restart: unless-stopped
+  edge:
+    build: .
+    command: uvicorn fieldrelay.edge:app --host 0.0.0.0 --port 8500
+    environment:
+      FIELDRELAY_SHARED_SECRET: ${FIELDRELAY_SHARED_SECRET:?Set FIELDRELAY_SHARED_SECRET in .env}
+      FIELDRELAY_CLOUD_URL: http://cloud:8000
+      FIELDRELAY_EDGE_DB: /data/edge.db
+    ports:
+      - "8500:8500"
+    volumes:
+      - edge_data:/data
+    depends_on:
+      - cloud
+    restart: unless-stopped
+volumes:
+  cloud_data:
+  edge_data:

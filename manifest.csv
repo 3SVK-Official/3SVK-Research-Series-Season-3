@@ -1,0 +1,8 @@
+case_id,case_type,purpose,expected_rule_codes,expected_finding_count,interpretation_note
+case_01_public_ssh,positive,Positive case for public SSH ingress on an AWS security group.,CS-101,1,Synthetic public IPv4 source and TCP port 22.
+case_02_wildcard_iam,positive,Positive case for wildcard IAM action and resource scope.,CS-201,1,Synthetic policy object; expected Critical severity under current rule logic.
+case_03_destructive_persistent,positive,Positive case for deletion of a persistent data resource.,CS-301,1,Synthetic database instance; intended to exercise delete action detection.
+case_04_encryption_disabled,positive,Positive case for an explicit false encryption setting.,CS-401,1,Synthetic RDS resource update; omission or unknown value is not equivalent to false.
+case_05_s3_block_public_access,positive,Positive case for an explicitly disabled S3 Block Public Access control.,CS-501,1,One disabled flag is sufficient for the current implemented rule.
+case_06_s3_public_acl,positive,Positive case for a public-read-write S3 ACL.,CS-502,1,Synthetic ACL resource; the current rule rates public-read-write Critical.
+case_07_benign_https,negative_control,Negative control: public HTTPS ingress does not match the current CS-101 conditions.,,0,This test only checks this rule's current logic; it does not prove network exposure is safe.
