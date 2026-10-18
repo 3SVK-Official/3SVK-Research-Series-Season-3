@@ -1,0 +1,32 @@
+{
+  "events": [
+    {
+      "id": "example-auth-failure",
+      "source": "example",
+      "observedAt": "2026-10-17T09:14:00.000Z",
+      "eventType": "authentication.failure",
+      "severity": "medium",
+      "summary": "Several failed sign-in attempts were recorded for one account.",
+      "entities": [
+        {
+          "kind": "user",
+          "value": "analyst@example.test"
+        }
+      ]
+    },
+    {
+      "id": "example-auth-success",
+      "source": "example",
+      "observedAt": "2026-10-17T09:15:00.000Z",
+      "eventType": "authentication.success",
+      "severity": "high",
+      "summary": "A sign-in succeeded for the same account shortly after the failures.",
+      "entities": [
+        {
+          "kind": "user",
+          "value": "analyst@example.test"
+        }
+      ]
+    }
+  ]
+}

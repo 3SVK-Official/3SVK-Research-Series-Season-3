@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#0b1119">
+    <title>Sentinel | Security operations</title>
+    <link rel="stylesheet" href="/app.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Main navigation">
+        <a class="brand" href="/" aria-label="Sentinel home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2.8 20 6v5.1c0 5.1-3.4 8.5-8 10.1-4.6-1.6-8-5-8-10.1V6l8-3.2Z" stroke="currentColor" stroke-width="1.7"/><path d="m8.7 12.1 2.1 2.1 4.7-4.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span>sentinel<span class="brand-light">ops</span></span>
+        </a>
+        <div class="workspace-switcher">
+          <span class="workspace-avatar">L</span>
+          <span class="workspace-copy"><strong id="workspace-name">Local workspace</strong><small id="workspace-subtitle">Demo environment</small></span>
+          <span class="switch-chevron" aria-hidden="true">⌄</span>
+        </div>
+        <p class="nav-label">OPERATIONS</p>
+        <nav class="nav-list">
+          <a class="nav-item active" href="#overview" aria-current="page"><span class="nav-icon">◫</span> Overview</a>
+          <a class="nav-item" href="#incidents"><span class="nav-icon">◉</span> Incidents <span id="nav-incident-count" class="nav-count">—</span></a>
+          <a class="nav-item" href="#events"><span class="nav-icon">≋</span> Event stream</a>
+          <a class="nav-item" href="#sources"><span class="nav-icon">⌘</span> Data sources</a>
+        </nav>
+        <div class="sidebar-bottom">
+          <div class="privacy-note"><span class="lock-icon">⌑</span><span><strong>Analyst review only</strong><small>No automated response actions</small></span></div>
+          <div class="profile-row"><span class="profile-avatar">A</span><span><strong id="profile-name">Local analyst</strong><small id="profile-role">Analyst workspace</small></span><span class="profile-more">···</span></div>
+        </div>
+      </aside>
+
+      <main id="overview" class="main-area">
+        <header class="topbar">
+          <div class="breadcrumbs"><span>Workspace</span><span class="crumb-separator">/</span><strong>Security overview</strong></div>
+          <div class="topbar-actions">
+            <span id="environment-label" class="environment"><span class="status-dot"></span> LOCAL WORKSPACE</span>
+            <span class="topbar-divider"></span>
+            <button id="import-events" class="refresh-button import-button" type="button" aria-label="Import normalized JSON events"><span class="import-icon" aria-hidden="true">↑</span><span class="import-label"> Import JSON</span></button>
+            <button id="import-wazuh" class="refresh-button wazuh-button" type="button" aria-label="Import Wazuh JSONL alerts"><span class="import-icon" aria-hidden="true">W</span><span class="import-label"> Import Wazuh</span></button>
+            <button id="reset-demo" class="refresh-button reset-button" type="button" hidden>Restore</button>
+            <button id="logout" class="refresh-button" type="button" hidden>Sign out</button>
+            <input id="event-file" type="file" accept="application/json,.json" hidden>
+            <input id="wazuh-file" type="file" accept=".json,.jsonl,.ndjson,application/json,application/x-ndjson,application/ndjson" hidden>
+            <button id="refresh" class="refresh-button" type="button"><span class="refresh-icon">↻</span> Refresh</button>
+          </div>
+        </header>
+
+        <div class="page-content">
+          <section class="page-heading">
+            <div>
+              <p class="eyebrow">MONITORING CENTER <span class="heading-dot">/</span> OVERVIEW</p>
+              <h1>Security overview</h1>
+              <p class="intro-copy">A unified view of signals that may need your attention.</p>
+            </div>
+            <div class="updated-label"><span class="live-pulse"></span><span><strong id="data-mode-title">Local sample</strong><small id="data-mode-description">Demo events · not live telemetry</small></span></div>
+          </section>
+
+          <p id="load-error" class="error-banner" role="alert" hidden></p>
+
+          <section class="summary-grid" aria-label="Security operations metrics">
+            <article class="summary-card">
+              <div class="metric-top"><span class="metric-label">Review candidates</span><span class="metric-icon alert-icon">!</span></div>
+              <p id="incident-count" class="summary-value" aria-live="polite">—</p>
+              <p class="metric-foot"><span class="metric-status">Needs analyst review</span></p>
+            </article>
+            <article class="summary-card">
+              <div class="metric-top"><span class="metric-label">Events analyzed</span><span class="metric-icon event-icon">≋</span></div>
+              <p id="event-count" class="summary-value" aria-live="polite">—</p>
+              <p class="metric-foot">In the current synthetic sample</p>
+            </article>
+            <article id="sources" class="summary-card">
+              <div class="metric-top"><span class="metric-label">Event sources</span><span class="metric-icon source-icon">⌘</span></div>
+              <p id="source-count" class="summary-value" aria-live="polite">—</p>
+              <p id="source-description" class="metric-foot"><span class="source-indicator"></span> Demo connector only</p>
+            </article>
+            <article class="summary-card">
+              <div class="metric-top"><span class="metric-label">Automated actions</span><span class="metric-icon action-icon">⛨</span></div>
+              <p class="summary-value">0</p>
+              <p class="metric-foot">Response actions are disabled</p>
+            </article>
+          </section>
+
+          <section class="operations-grid">
+            <article id="incidents" class="panel incident-panel">
+              <div class="panel-heading">
+                <div><div class="panel-title-line"><h2>Incident queue</h2><span class="live-pill"><span></span> NEEDS REVIEW</span></div><p class="panel-subtitle">Prioritized rule-based signals from the available event sample</p></div>
+              </div>
+              <div id="candidate-list" class="candidate-list" aria-live="polite"></div>
+              <div class="queue-footer"><span id="workflow-footnote">Local workflow state · resets on restart</span><a href="#events">View event stream <span aria-hidden="true">→</span></a></div>
+            </article>
+
+            <article class="panel source-panel">
+              <div class="panel-heading">
+                <div><h2>Event sources</h2><p class="panel-subtitle">Inputs available in this workspace</p></div>
+                <span id="source-total" class="more-label">1 source</span>
+              </div>
+              <div id="source-row" class="source-row">
+                <span class="source-logo">D</span>
+                <span class="source-copy"><strong id="source-name">Demo event connector</strong><small id="source-detail">Sample normalized events</small></span>
+                <span id="source-state" class="connection-state"><span class="source-indicator"></span> Local</span>
+              </div>
+              <div class="source-empty">
+                <span class="source-empty-icon">⌘</span>
+                <strong>No live integrations</strong>
+                <p>Live connectors require an authorized monitoring environment. Import a Wazuh JSONL export or normalized events to test the review workflow.</p>
+                <a class="template-link" href="/wazuh-alerts-example.jsonl" download>Download Wazuh JSONL example <span aria-hidden="true">↓</span></a>
+                <a class="template-link secondary-template-link" href="/event-import-template.json" download>Download normalized JSON format <span aria-hidden="true">↓</span></a>
+              </div>
+              <div class="source-footer"><span class="shield-mini">⛨</span> Local-only · memory-only · no credentials stored</div>
+            </article>
+          </section>
+
+          <section id="events" class="panel event-panel">
+            <div class="panel-heading">
+              <div><h2>Recent event activity</h2><p id="event-panel-subtitle" class="panel-subtitle">Normalized events from the local demo connector</p></div>
+              <span class="event-count-label"><span class="status-dot"></span> <span id="event-count-label">—</span> events</span>
+            </div>
+            <div class="table-scroll">
+              <table class="event-table">
+                <thead><tr><th>EVENT</th><th>SUMMARY</th><th>ENTITY</th><th>SEVERITY</th><th>OBSERVED (UTC)</th></tr></thead>
+                <tbody id="event-rows"><tr><td colspan="5" class="table-loading">Loading local sample events…</td></tr></tbody>
+              </table>
+            </div>
+          </section>
+
+          <footer class="disclaimer">
+            <span class="disclaimer-icon">i</span>
+            <span><strong>Human-led triage.</strong> A rule-based review candidate is not a confirmed incident. Imported data is held in server memory only and is lost when the process restarts.</span>
+            <span class="build-label">LOCAL PROTOTYPE · READ ONLY</span>
+          </footer>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

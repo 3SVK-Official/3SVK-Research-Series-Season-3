@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: incident-response-demo
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: AUTH_MODE
+        value: local
+      - key: ALERT_SOURCE
+        value: demo
+      - key: READ_ONLY_DEMO
+        value: true
