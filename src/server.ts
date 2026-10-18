@@ -168,6 +168,24 @@ function hasAllowedMutationOrigin(request: import("node:http").IncomingMessage):
   }
 }
 
+function hasSameOrigin(request: import("node:http").IncomingMessage): boolean {
+  const origin = request.headers.origin;
+  const host = request.headers["x-forwarded-host"] ?? request.headers.host;
+  const forwardedProtocol = request.headers["x-forwarded-proto"];
+  const protocol = typeof forwardedProtocol === "string"
+    ? forwardedProtocol.split(",")[0].trim()
+    : "http";
+  if (!origin || !host || (protocol !== "http" && protocol !== "https")) {
+    return false;
+  }
+
+  try {
+    return new URL(origin).origin === `${protocol}://${host}`;
+  } catch {
+    return false;
+  }
+}
+
 function cookieValue(
   request: import("node:http").IncomingMessage,
   name: string
@@ -198,6 +216,7 @@ export interface AppServerOptions {
   authMode?: "local" | "oidc";
   authenticator?: AuthenticationService;
   readOnlyDemo?: boolean;
+  publicDemoImports?: boolean;
 }
 
 export function createAppServer(
@@ -206,11 +225,15 @@ export function createAppServer(
 ): Server {
   const authMode = options.authMode ?? "local";
   const readOnlyDemo = options.readOnlyDemo ?? false;
+  const publicDemoImports = options.publicDemoImports ?? false;
   if (authMode !== "local" && authMode !== "oidc") {
     throw new Error("AUTH_MODE must be local or oidc.");
   }
   if (readOnlyDemo && (authMode !== "local" || connector.mode !== "demo")) {
     throw new Error("Read-only public demo mode requires local authentication and the demo connector.");
+  }
+  if (publicDemoImports && (!readOnlyDemo || authMode !== "local" || connector.mode !== "demo")) {
+    throw new Error("Public demo imports require local authentication and the demo connector in read-only demo mode.");
   }
   if (authMode === "oidc" && !options.authenticator) {
     throw new Error("OIDC mode requires a configured OIDC authenticator.");
@@ -258,7 +281,10 @@ export function createAppServer(
       return;
     }
 
-    if (readOnlyDemo && request.method !== "GET") {
+    const isPublicDemoImport = publicDemoImports &&
+      (isEventImport || isWazuhImport) &&
+      request.method === "POST";
+    if (readOnlyDemo && request.method !== "GET" && !isPublicDemoImport) {
       response.setHeader("allow", "GET");
       sendJson(response, 405, { error: "This public demo is read-only." });
       return;
@@ -391,7 +417,8 @@ export function createAppServer(
           email: principal.email,
           displayName: principal.displayName,
           mode: authMode,
-          readOnly: readOnlyDemo
+          readOnly: readOnlyDemo,
+          canImportEvents: publicDemoImports || canImportEvents(principal.role)
         });
       }
       return;
@@ -426,9 +453,13 @@ export function createAppServer(
     if (
       ((isEventImport || isWazuhImport || isDemoReset) && request.method === "POST" ||
         isIncidentUpdate && request.method === "PATCH") &&
-      !(authMode === "oidc"
-        ? authenticator?.acceptsOrigin(request.headers.origin)
-        : hasAllowedMutationOrigin(request))
+      !(
+        authMode === "oidc"
+          ? authenticator?.acceptsOrigin(request.headers.origin)
+          : publicDemoImports && (isEventImport || isWazuhImport) && request.method === "POST"
+            ? hasSameOrigin(request)
+            : hasAllowedMutationOrigin(request)
+      )
     ) {
       sendJson(response, 403, { error: "Cross-origin requests are not allowed." });
       return;
@@ -440,7 +471,11 @@ export function createAppServer(
       return;
     }
 
-    if ((isEventImport || isWazuhImport || isDemoReset) && !canImportEvents(principal.role)) {
+    if (
+      (isEventImport || isWazuhImport || isDemoReset) &&
+      !canImportEvents(principal.role) &&
+      !(publicDemoImports && (isEventImport || isWazuhImport))
+    ) {
       sendJson(response, 403, { error: "Administrator role required." });
       return;
     }
@@ -647,12 +682,20 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
       throw new Error("ALERT_SOURCE must be demo or wazuh-indexer.");
     }
     const rawReadOnlyDemo = process.env.READ_ONLY_DEMO ?? "false";
-    if (rawReadOnlyDemo !== "true" && rawReadOnlyDemo !== "false") {
-      throw new Error("READ_ONLY_DEMO must be true or false.");
+    const rawPublicDemoImports = process.env.PUBLIC_DEMO_IMPORTS ?? "false";
+    if (
+      (rawReadOnlyDemo !== "true" && rawReadOnlyDemo !== "false") ||
+      (rawPublicDemoImports !== "true" && rawPublicDemoImports !== "false")
+    ) {
+      throw new Error("READ_ONLY_DEMO and PUBLIC_DEMO_IMPORTS must be true or false.");
     }
     const readOnlyDemo = rawReadOnlyDemo === "true";
+    const publicDemoImports = rawPublicDemoImports === "true";
     if (readOnlyDemo && (authMode !== "local" || alertSource !== "demo")) {
       throw new Error("READ_ONLY_DEMO requires AUTH_MODE=local and ALERT_SOURCE=demo.");
+    }
+    if (publicDemoImports && !readOnlyDemo) {
+      throw new Error("PUBLIC_DEMO_IMPORTS=true requires READ_ONLY_DEMO=true.");
     }
     const host = process.env.HOST ?? "127.0.0.1";
     if (
@@ -668,7 +711,12 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
     const connector = alertSource === "wazuh-indexer"
       ? createWazuhIndexerConnector(readWazuhIndexerSettings())
       : createDemoConnector();
-    const server = createAppServer(connector, { authMode, authenticator, readOnlyDemo });
+    const server = createAppServer(connector, {
+      authMode,
+      authenticator,
+      readOnlyDemo,
+      publicDemoImports
+    });
     server.listen(port, host, () => {
       console.log(
         `Application listening on ${readOnlyDemo ? "public read-only demo" : authMode === "oidc" ? "OIDC-protected" : "local"} interface ${host}:${port}`

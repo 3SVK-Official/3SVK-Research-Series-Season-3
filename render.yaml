@@ -15,3 +15,5 @@ services:
         value: demo
       - key: READ_ONLY_DEMO
         value: true
+      - key: PUBLIC_DEMO_IMPORTS
+        value: true

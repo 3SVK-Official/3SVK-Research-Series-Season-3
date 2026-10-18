@@ -226,6 +226,92 @@ describe("local incident-response API", () => {
     );
   });
 
+  it("allows same-origin public demo imports but blocks resets and case updates", async () => {
+    const publicDemo = createAppServer(createDemoConnector(), {
+      readOnlyDemo: true,
+      publicDemoImports: true
+    });
+    await new Promise<void>((resolve, reject) => {
+      publicDemo.once("error", reject);
+      publicDemo.listen(0, "127.0.0.1", resolve);
+    });
+    const address = publicDemo.address() as AddressInfo;
+    const publicUrl = `http://127.0.0.1:${address.port}`;
+
+    try {
+      const identityResponse = await fetch(`${publicUrl}/api/v1/me`);
+      const identity = await identityResponse.json() as {
+        role: string;
+        canImportEvents: boolean;
+        readOnly: boolean;
+      };
+      assert.equal(identity.role, "viewer");
+      assert.equal(identity.canImportEvents, true);
+      assert.equal(identity.readOnly, true);
+
+      const maliciousOrigin = await fetch(`${publicUrl}/api/v1/events/import`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          origin: "https://attacker.example"
+        },
+        body: JSON.stringify({ events: [] })
+      });
+      assert.equal(maliciousOrigin.status, 403);
+
+      const importedEvent = {
+        id: "public-demo-import",
+        source: "public-demo",
+        observedAt: "2026-10-18T10:00:00.000Z",
+        eventType: "test.alert",
+        severity: "medium",
+        summary: "Synthetic event uploaded to the public demo.",
+        entities: []
+      };
+      const importResponse = await fetch(`${publicUrl}/api/v1/events/import`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          origin: publicUrl
+        },
+        body: JSON.stringify({ events: [importedEvent] })
+      });
+      assert.equal(importResponse.status, 200);
+      assert.deepEqual(await importResponse.json(), {
+        imported: 1,
+        mode: "uploaded",
+        format: "normalized-json"
+      });
+
+      const eventsResponse = await fetch(`${publicUrl}/api/v1/events`);
+      const events = await eventsResponse.json() as {
+        mode: string;
+        events: Array<{ id: string }>;
+      };
+      assert.equal(events.mode, "uploaded");
+      assert.deepEqual(events.events.map((event) => event.id), ["public-demo-import"]);
+
+      for (const [path, method] of [
+        ["/api/v1/events/reset-demo", "POST"],
+        ["/api/v1/incidents/auth-sequence%3Ademo-002", "PATCH"]
+      ] as const) {
+        const response = await fetch(`${publicUrl}${path}`, {
+          method,
+          headers: {
+            "content-type": "application/json",
+            origin: publicUrl
+          },
+          body: JSON.stringify({ status: "resolved" })
+        });
+        assert.equal(response.status, 405, `${method} ${path}`);
+      }
+    } finally {
+      await new Promise<void>((resolve, reject) => {
+        publicDemo.close((error) => error ? reject(error) : resolve());
+      });
+    }
+  });
+
   it("reports live connector mode and query limits without claiming in-memory persistence", async () => {
     const liveServer = createAppServer({
       name: "wazuh-indexer",

@@ -35,18 +35,19 @@ development mode binds to `127.0.0.1`; do not expose that mode to the internet.
 ## Deploy a public Render demo
 
 This repository includes a Render Blueprint in `render.yaml` for a public,
-read-only hackathon demo. In Render, create a **New Blueprint Instance** from
+hackathon demo. In Render, create a **New Blueprint Instance** from
 this GitHub repository and deploy the `incident-response-demo` web service.
 The Blueprint binds to Render's public interface with the synthetic demo
 connector; it does not include Wazuh credentials or real alert data. Render
 builds with `npm ci && npm run build`, starts with `npm start`, and uses
 `/healthz` for its health check.
 
-Public demo mode rejects every non-GET request at the server, including import,
-reset, and incident workflow mutations. It also hides the import controls and
-disables review status changes in the dashboard. This mode is intended only
-for showing synthetic data. Do not change it to use live data or real customer
-logs; use a private, authenticated deployment for those.
+The public demo allows same-origin JSON/Wazuh file imports so visitors can try
+the workflow. Uploads replace the shared in-memory event set for all visitors
+and disappear when the service restarts. Any visitor can replace the displayed
+data, so import synthetic or sanitized test alerts only. Reset and case-status
+mutations remain disabled. Use a private, authenticated deployment for real
+systems or customer logs.
 
 ## Import test events
 
@@ -180,10 +181,10 @@ that an incident occurred.
 
 The `render.yaml` Blueprint configures the public service named
 `incident-response-demo` with `HOST=0.0.0.0`, `AUTH_MODE=local`,
-`ALERT_SOURCE=demo`, and `READ_ONLY_DEMO=true`. The server rejects every
-non-GET request in this mode and only serves synthetic events. No Wazuh
-endpoint, credential, uploaded event data, or customer log is part of this
-deployment configuration.
+`ALERT_SOURCE=demo`, `READ_ONLY_DEMO=true`, and `PUBLIC_DEMO_IMPORTS=true`.
+Only same-origin event imports are enabled; reset and case-status changes are
+blocked. Uploaded events are shared among visitors and held in memory only.
+No Wazuh endpoint or credential is part of this deployment configuration.
 
 To deploy, import this repository into Render as a Blueprint and apply the
 `incident-response-demo` service. Render builds with `npm ci && npm run build`,

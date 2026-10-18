@@ -344,10 +344,10 @@ async function loadDashboard() {
       : isLive
         ? "Recent alerts returned by the configured Wazuh Indexer"
         : "Normalized events from the local demo connector";
-    importButton.disabled = identityData.role !== "admin";
-    importWazuhButton.disabled = identityData.role !== "admin";
-    importButton.hidden = identityData.readOnly === true;
-    importWazuhButton.hidden = identityData.readOnly === true;
+    importButton.disabled = identityData.canImportEvents !== true;
+    importWazuhButton.disabled = identityData.canImportEvents !== true;
+    importButton.hidden = identityData.canImportEvents !== true;
+    importWazuhButton.hidden = identityData.canImportEvents !== true;
     resetButton.hidden = !isUploaded || identityData.role !== "admin";
     workflowFootnote.textContent = identityData.readOnly === true
       ? "Public demo · read-only"
