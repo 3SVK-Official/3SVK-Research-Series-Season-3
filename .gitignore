@@ -1,5 +1,4 @@
 node_modules/
-<<<<<<< HEAD
 dist/
 coverage/
 .env
@@ -8,7 +7,3 @@ coverage/
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
-=======
-.DS_Store
-dist/
->>>>>>> f313c139f210db05c8a8aa0db12c625271890e31
