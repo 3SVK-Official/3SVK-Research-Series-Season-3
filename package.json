@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "incident-response-prototype",
   "version": "0.1.0",
   "private": true,
@@ -18,5 +19,18 @@
   },
   "dependencies": {
     "openid-client": "^6.8.8"
+=======
+  "name": "aether-edge-3svk-s3",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host --port 3000",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+>>>>>>> f313c139f210db05c8a8aa0db12c625271890e31
   }
 }

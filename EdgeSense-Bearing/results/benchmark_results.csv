@@ -1,0 +1,2 @@
+test_samples,total_inference_seconds,average_latency_ms,process_rss_memory_mb,raw_window_bytes,feature_payload_bytes,theoretical_payload_reduction_percent
+849,0.07334579998860136,0.08639081270742209,144.66796875,8000,32,99.6

@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EdgeSense-Bearing | Cloud-Edge AI</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:#07111f;
+    color:#f5f7fb;
+    line-height:1.6;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
+}
+
+.container{
+    width:90%;
+    max-width:1150px;
+    margin:auto;
+}
+
+/* NAVBAR */
+nav{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:rgba(7,17,31,.95);
+    border-bottom:1px solid #23344b;
+}
+
+.nav{
+    height:70px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.logo span{
+    color:#55d6ff;
+}
+
+.nav-links{
+    display:flex;
+    gap:25px;
+}
+
+.nav-links a{
+    color:#aebed2;
+    font-size:14px;
+}
+
+.nav-links a:hover{
+    color:#55d6ff;
+}
+
+/* HERO */
+.hero{
+    padding:110px 0 90px;
+    background:
+    radial-gradient(circle at 80% 20%,rgba(85,214,255,.14),transparent 30%),
+    radial-gradient(circle at 20% 80%,rgba(124,124,255,.12),transparent 30%);
+}
+
+.badge{
+    display:inline-block;
+    padding:7px 14px;
+    border:1px solid #31516c;
+    border-radius:30px;
+    color:#55d6ff;
+    font-size:13px;
+    margin-bottom:25px;
+}
+
+.hero h1{
+    font-size:clamp(42px,7vw,75px);
+    line-height:1.05;
+    max-width:900px;
+}
+
+.hero h1 span{
+    color:#55d6ff;
+}
+
+.hero p{
+    max-width:800px;
+    color:#aebed2;
+    font-size:19px;
+    margin:25px 0;
+}
+
+.buttons{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    padding:12px 18px;
+    border-radius:9px;
+    border:1px solid #30445c;
+    background:#102238;
+    font-weight:bold;
+}
+
+.btn.primary{
+    background:#188ec1;
+    border:none;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+/* SECTIONS */
+section{
+    padding:75px 0;
+}
+
+.title{
+    font-size:36px;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#9fb1c7;
+    max-width:800px;
+    margin-bottom:30px;
+}
+
+/* CARDS */
+.grid{
+    display:grid;
+    gap:18px;
+}
+
+.metrics{
+    grid-template-columns:repeat(4,1fr);
+}
+
+.card{
+    background:#0e2035;
+    border:1px solid #223850;
+    border-radius:17px;
+    padding:24px;
+}
+
+.metric{
+    font-size:34px;
+    font-weight:bold;
+    color:#55d6ff;
+}
+
+.metric.green{
+    color:#48e39a;
+}
+
+.card p{
+    color:#aebed2;
+    font-size:14px;
+}
+
+.card h3{
+    margin-bottom:8px;
+}
+
+/* PIPELINE */
+.pipeline{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:15px;
+}
+
+.step{
+    text-align:center;
+    padding:25px 12px;
+    background:#0e2035;
+    border:1px solid #223850;
+    border-radius:15px;
+}
+
+.step-number{
+    color:#55d6ff;
+    font-weight:bold;
+    font-size:13px;
+}
+
+.step h3{
+    margin:7px 0;
+}
+
+.step p{
+    color:#9fb1c7;
+    font-size:13px;
+}
+
+/* CLASSES */
+.classes{
+    grid-template-columns:repeat(4,1fr);
+}
+
+.class-card{
+    background:#0e2035;
+    border:1px solid #223850;
+    border-radius:15px;
+    padding:23px;
+}
+
+.class-card span{
+    color:#55d6ff;
+    font-size:12px;
+    font-weight:bold;
+}
+
+/* TABLE */
+.table-wrap{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#0e2035;
+    border-radius:15px;
+    overflow:hidden;
+}
+
+th,td{
+    padding:15px;
+    border-bottom:1px solid #263c54;
+    text-align:left;
+}
+
+th{
+    color:#55d6ff;
+}
+
+td{
+    color:#dbe6f2;
+}
+
+.highlight{
+    color:#48e39a;
+    font-weight:bold;
+}
+
+/* GRAPHS */
+.graphs{
+    grid-template-columns:repeat(2,1fr);
+}
+
+.graph-card{
+    background:#0e2035;
+    padding:18px;
+    border:1px solid #223850;
+    border-radius:17px;
+}
+
+.graph-card img{
+    width:100%;
+    display:block;
+    background:white;
+    border-radius:10px;
+}
+
+.graph-card h3{
+    margin-top:15px;
+}
+
+/* TWO COLUMN */
+.two-col{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+ul{
+    padding-left:20px;
+    color:#aebed2;
+}
+
+li{
+    margin:8px 0;
+}
+
+/* FOOTER */
+footer{
+    border-top:1px solid #223850;
+    padding:35px 0;
+    color:#9fb1c7;
+}
+
+/* MOBILE */
+@media(max-width:850px){
+
+    .nav-links{
+        display:none;
+    }
+
+    .metrics,
+    .classes,
+    .graphs,
+    .two-col{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .pipeline{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:550px){
+
+    .metrics,
+    .classes,
+    .graphs,
+    .two-col{
+        grid-template-columns:1fr;
+    }
+
+    .hero{
+        padding-top:70px;
+    }
+}
+</style>
+</head>
+
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav>
+<div class="container nav">
+
+<div class="logo">
+EdgeSense<span>-Bearing</span>
+</div>
+
+<div class="nav-links">
+<a href="#overview">Overview</a>
+<a href="#pipeline">Pipeline</a>
+<a href="#results">Results</a>
+<a href="#graphs">Graphs</a>
+<a href="#research">Research</a>
+</div>
+
+</div>
+</nav>
+
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="container">
+
+<div class="badge">
+RESEARCH PROJECT • EDGE AI • MACHINE LEARNING
+</div>
+
+<h1>
+Lightweight <span>Cloud-Edge AI</span>
+for Real-Time Bearing Fault Diagnosis
+</h1>
+
+<p>
+EdgeSense-Bearing is a machine-learning based predictive maintenance
+system that detects bearing conditions from motor vibration signals
+using compact statistical features and edge-cloud processing.
+</p>
+
+<div class="buttons">
+
+<a class="btn primary" href="#results">
+View Results
+</a>
+
+<a class="btn" href="#graphs">
+View Graphs
+</a>
+
+<a class="btn"
+href="https://github.com/workwithharshc-boop/3SVK-Research-Series-Season-3/tree/edgesense-bearing/EdgeSense-Bearing/src"
+target="_blank">
+Python Code
+</a>
+
+<a class="btn"
+href="https://github.com/workwithharshc-boop/3SVK-Research-Series-Season-3"
+target="_blank">
+GitHub ↗
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- OVERVIEW -->
+
+<section id="overview">
+
+<div class="container">
+
+<h2 class="title">
+Project at a Glance
+</h2>
+
+<p class="subtitle">
+Experimental results obtained from the implemented CWRU bearing-data
+workflow and machine-learning evaluation.
+</p>
+
+
+<div class="grid metrics">
+
+<div class="card">
+<div class="metric green">100%</div>
+<p>Decision Tree Accuracy</p>
+</div>
+
+<div class="card">
+<div class="metric green">100%</div>
+<p>Random Forest Accuracy</p>
+</div>
+
+<div class="card">
+<div class="metric">99.6%</div>
+<p>Theoretical Payload Reduction</p>
+</div>
+
+<div class="card">
+<div class="metric">0.086 ms</div>
+<p>Average Prediction Latency</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- PIPELINE -->
+
+<section id="pipeline">
+
+<div class="container">
+
+<h2 class="title">
+System Pipeline
+</h2>
+
+<p class="subtitle">
+The proposed workflow converts raw vibration signals into compact
+features and performs automated bearing fault classification.
+</p>
+
+
+<div class="pipeline">
+
+<div class="step">
+<div class="step-number">STEP 01</div>
+<h3>Vibration</h3>
+<p>CWRU drive-end vibration signal</p>
+</div>
+
+<div class="step">
+<div class="step-number">STEP 02</div>
+<h3>Windowing</h3>
+<p>1000 samples per window</p>
+</div>
+
+<div class="step">
+<div class="step-number">STEP 03</div>
+<h3>Features</h3>
+<p>Mean, RMS, STD & Peak</p>
+</div>
+
+<div class="step">
+<div class="step-number">STEP 04</div>
+<h3>Machine Learning</h3>
+<p>Fault classification</p>
+</div>
+
+<div class="step">
+<div class="step-number">STEP 05</div>
+<h3>Diagnosis</h3>
+<p>Bearing condition prediction</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- BEARING CLASSES -->
+
+<section>
+
+<div class="container">
+
+<h2 class="title">
+Bearing Conditions
+</h2>
+
+<div class="grid classes">
+
+<div class="class-card">
+<span>CLASS 01</span>
+<h3>Normal</h3>
+<p>Healthy bearing vibration condition.</p>
+</div>
+
+<div class="class-card">
+<span>CLASS 02</span>
+<h3>Inner Race Fault</h3>
+<p>Fault associated with the inner race.</p>
+</div>
+
+<div class="class-card">
+<span>CLASS 03</span>
+<h3>Ball Fault</h3>
+<p>Fault associated with the rolling element.</p>
+</div>
+
+<div class="class-card">
+<span>CLASS 04</span>
+<h3>Outer Race Fault</h3>
+<p>Fault associated with the outer race.</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- RESULTS -->
+
+<section id="results">
+
+<div class="container">
+
+<h2 class="title">
+Model Comparison
+</h2>
+
+<p class="subtitle">
+Performance metrics obtained from the implemented experimental
+train/test evaluation.
+</p>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Model</th>
+<th>Accuracy</th>
+<th>Precision</th>
+<th>Recall</th>
+<th>F1 Score</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+<td>Logistic Regression</td>
+<td>98.82%</td>
+<td>98.91%</td>
+<td>98.82%</td>
+<td>98.82%</td>
+</tr>
+
+<tr>
+<td>Decision Tree</td>
+<td class="highlight">100%</td>
+<td class="highlight">100%</td>
+<td class="highlight">100%</td>
+<td class="highlight">100%</td>
+</tr>
+
+<tr>
+<td>KNN</td>
+<td>91.99%</td>
+<td>94.86%</td>
+<td>91.99%</td>
+<td>91.30%</td>
+</tr>
+
+<tr>
+<td>Random Forest</td>
+<td class="highlight">100%</td>
+<td class="highlight">100%</td>
+<td class="highlight">100%</td>
+<td class="highlight">100%</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<br><br>
+
+
+<div class="grid metrics">
+
+<div class="card">
+<div class="metric">99.6%</div>
+<p>Average Edge-Cloud Payload Reduction</p>
+</div>
+
+<div class="card">
+<div class="metric green">100%</div>
+<p>Edge-Cloud Prediction Accuracy</p>
+</div>
+
+<div class="card">
+<div class="metric">144.67 MB</div>
+<p>Process RSS Memory</p>
+</div>
+
+<div class="card">
+<div class="metric">0.086 ms</div>
+<p>Average Model Prediction Latency</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- GRAPHS -->
+
+<section id="graphs">
+
+<div class="container">
+
+<h2 class="title">
+Experimental Results & Graphs
+</h2>
+
+<p class="subtitle">
+Visual outputs generated by the EdgeSense-Bearing Python analysis pipeline.
+</p>
+
+
+<div class="grid graphs">
+
+
+<div class="graph-card">
+
+<img
+src="EdgeSense-Bearing/results/accuracy_comparison.png"
+alt="Accuracy comparison">
+
+<h3>Accuracy Comparison</h3>
+
+<p>
+Comparison of classification accuracy across the evaluated models.
+</p>
+
+</div>
+
+
+<div class="graph-card">
+
+<img
+src="EdgeSense-Bearing/results/precision_comparison.png"
+alt="Precision comparison">
+
+<h3>Precision Comparison</h3>
+
+<p>
+Precision performance of the evaluated machine-learning models.
+</p>
+
+</div>
+
+
+<div class="graph-card">
+
+<img
+src="EdgeSense-Bearing/results/recall_comparison.png"
+alt="Recall comparison">
+
+<h3>Recall Comparison</h3>
+
+<p>
+Recall performance across the evaluated models.
+</p>
+
+</div>
+
+
+<div class="graph-card">
+
+<img
+src="EdgeSense-Bearing/results/f1_score_comparison.png"
+alt="F1 score comparison">
+
+<h3>F1 Score Comparison</h3>
+
+<p>
+F1-score comparison across the classification models.
+</p>
+
+</div>
+
+
+<div class="graph-card">
+
+<img
+src="EdgeSense-Bearing/results/confusion_matrix.png"
+alt="Confusion matrix">
+
+<h3>Confusion Matrix</h3>
+
+<p>
+Classification results on the test dataset.
+</p>
+
+</div>
+
+
+<div class="graph-card">
+
+<img
+src="EdgeSense-Bearing/results/feature_importance.png"
+alt="Feature importance">
+
+<h3>Feature Importance</h3>
+
+<p>
+Feature contribution obtained from the tree-based model.
+</p>
+
+</div>
+
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- RESEARCH -->
+
+<section id="research">
+
+<div class="container">
+
+<h2 class="title">
+Research & Implementation
+</h2>
+
+<div class="two-col">
+
+
+<div class="card">
+
+<h3>Dataset & Feature Extraction</h3>
+
+<br>
+
+<p>
+The project uses drive-end vibration signals from the
+Case Western Reserve University bearing dataset.
+</p>
+
+<br>
+
+<ul>
+
+<li>Window size: 1000 samples</li>
+
+<li>Mean</li>
+
+<li>RMS</li>
+
+<li>Standard Deviation</li>
+
+<li>Peak</li>
+
+</ul>
+
+</div>
+
+
+<div class="card">
+
+<h3>Edge-Cloud Concept</h3>
+
+<br>
+
+<p>
+Instead of transferring the complete raw vibration window,
+the edge stage extracts four compact statistical features.
+</p>
+
+<br>
+
+<ul>
+
+<li>Raw window = 1000 × float64 = 8000 bytes</li>
+
+<li>Feature payload = 4 × float64 = 32 bytes</li>
+
+<li>Theoretical payload reduction = 99.6%</li>
+
+</ul>
+
+</div>
+
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- PROJECT FILES -->
+
+<section>
+
+<div class="container">
+
+<h2 class="title">
+Project Resources
+</h2>
+
+<div class="grid classes">
+
+
+<a class="class-card"
+href="EdgeSense-Bearing/src/"
+target="_blank">
+
+<span>PYTHON</span>
+
+<h3>Source Code ↗</h3>
+
+<p>
+Feature extraction, dataset creation, training,
+evaluation and benchmarking scripts.
+</p>
+
+</a>
+
+
+<a class="class-card"
+href="EdgeSense-Bearing/results/"
+target="_blank">
+
+<span>RESULTS</span>
+
+<h3>Results Files ↗</h3>
+
+<p>
+CSV datasets, metrics, benchmark results and
+generated graphs.
+</p>
+
+</a>
+
+
+<a class="class-card"
+href="EdgeSense-Bearing/research-paper.md"
+target="_blank">
+
+<span>RESEARCH</span>
+
+<h3>Research Paper ↗</h3>
+
+<p>
+Complete research documentation and methodology.
+</p>
+
+</a>
+
+
+<a class="class-card"
+href="https://github.com/3SVK-Official/3SVK-Research-Series-Season-3/pull/14"
+target="_blank">
+
+<span>SUBMISSION</span>
+
+<h3>Pull Request #14 ↗</h3>
+
+<p>
+Official EdgeSense-Bearing GitHub pull request.
+</p>
+
+</a>
+
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+<div class="container">
+
+<strong>EdgeSense-Bearing</strong>
+
+<p>
+Lightweight Cloud-Edge AI for Real-Time Bearing Fault Diagnosis
+</p>
+
+<br>
+
+<p>
+Research Project • 2026
+</p>
+
+</div>
+
+</footer>
+
+</body>
+</html>
